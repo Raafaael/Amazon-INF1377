@@ -46,15 +46,15 @@
                 </section>
             {% endif %}
 
-            <section class="add-to-cart-box mt-4" aria-labelledby="add-to-cart-heading">
+            <form class="add-to-cart-box mt-4" method="post" action="{% url 'cart:add' produto.pk %}" aria-labelledby="add-to-cart-heading">
+                {% csrf_token %}
                 <h2 class="h6" id="add-to-cart-heading">Adicionar ao carrinho</h2>
                 <label class="form-label" for="quantity">Quantidade</label>
                 <div class="d-flex flex-wrap gap-2 align-items-center">
-                    <input class="form-control quantity-input" type="number" id="quantity" name="quantidade" min="1" max="{{ produto.estoque }}" value="1" {% if not produto.em_estoque %}disabled{% endif %}>
-                    <button class="btn btn-warning px-4" type="button" disabled aria-describedby="cart-integration-note">Adicionar ao carrinho</button>
+                    <input class="form-control quantity-input" type="number" id="quantity" name="quantidade" min="1" max="{{ produto.estoque }}" step="1" value="1" required {% if not produto.em_estoque %}disabled{% endif %}>
+                    <button class="btn btn-warning px-4" type="submit" {% if not produto.em_estoque %}disabled{% endif %}>Adicionar ao carrinho</button>
                 </div>
-                <p class="small text-secondary mt-2 mb-0" id="cart-integration-note">A integração de adição ainda depende da rota do carrinho.</p>
-            </section>
+            </form>
             <a class="btn btn-link px-0 mt-3" href="{% url 'catalog:index' %}">← Voltar ao catálogo</a>
         </div>
     </div>

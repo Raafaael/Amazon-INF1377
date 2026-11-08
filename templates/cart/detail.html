@@ -30,14 +30,19 @@
                             <p class="small text-secondary mb-1">{{ item.produto.get_tipo_display }}</p>
                             <p class="fw-semibold mb-0">R$ {{ item.produto.preco|floatformat:2 }} cada</p>
                         </div>
-                        <div class="col-6 col-md-2">
+                        <form class="col-6 col-md-2" method="post" action="{% url 'cart:update' item.pk %}" onsubmit="return Number(this.elements.quantidade.value) !== 0 || confirm('Remover &quot;{{ item.produto.nome|escapejs }}&quot; do carrinho?');">
+                            {% csrf_token %}
                             <label class="form-label small mb-1" for="quantity-{{ item.pk }}">Quantidade</label>
-                            <input class="form-control" id="quantity-{{ item.pk }}" type="number" min="1" value="{{ item.quantidade }}" disabled>
-                        </div>
+                            <input class="form-control" id="quantity-{{ item.pk }}" name="quantidade" type="number" min="0" max="{{ item.produto.estoque }}" step="1" value="{{ item.quantidade }}" required>
+                            <button class="btn btn-sm btn-outline-primary w-100 mt-2" type="submit">Atualizar</button>
+                        </form>
                         <div class="col-6 col-md-3 text-md-end">
                             <span class="small text-secondary d-block">Subtotal</span>
                             <strong>R$ {{ item.subtotal|floatformat:2 }}</strong>
-                            <div class="small text-secondary mt-1">Alteração e remoção aguardam integração do carrinho.</div>
+                            <form method="post" action="{% url 'cart:remove' item.pk %}" onsubmit="return confirm('Remover &quot;{{ item.produto.nome|escapejs }}&quot; do carrinho?');">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-link text-danger px-0 mt-1" type="submit">Remover</button>
+                            </form>
                         </div>
                     </div>
                 </article>
@@ -59,6 +64,5 @@
         <p class="text-secondary">Quando você adicionar produtos, eles aparecerão aqui.</p>
         <a class="btn btn-primary" href="{% url 'catalog:index' %}">Explorar catálogo</a>
     </section>
-    <p class="small text-secondary text-center mt-3">A integração do carrinho depende das rotas e dos dados do app cart.</p>
 {% endif %}
 {% endblock %}
