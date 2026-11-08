@@ -1,7 +1,7 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 
 
 def detail(request):
-    return HttpResponse('Carrinho em desenvolvimento.')
+    return render(request, 'cart/detail.html')
 
 # Create your views here.

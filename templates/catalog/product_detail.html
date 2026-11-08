@@ -1,84 +1,62 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ produto.nome }} | Amazon Acadêmico</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; color: #222; }
-        .topbar { background: #131921; color: white; padding: 16px 24px; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
-        .breadcrumb a, .link { color: #1a73e8; text-decoration: none; }
-        .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 9px rgba(0,0,0,0.06); }
-        .meta { display: flex; gap: 16px; flex-wrap: wrap; color: #666; }
-        .price { font-size: 2rem; font-weight: bold; margin: 18px 0; }
-        .badge { display: inline-block; background: #eef5ff; color: #0d4ec7; padding: 5px 10px; border-radius: 999px; font-size: 12px; }
-        ul { padding-left: 18px; }
-        a button { cursor: pointer; }
-        button { background: #ffd814; border: 1px solid #fcd200; border-radius: 999px; padding: 10px 18px; font-weight: bold; }
-    </style>
-</head>
-<body>
-    <div class="topbar">
-        <div class="container">
-            <a class="link" href="{% url 'catalog:index' %}" style="color: white; text-decoration: none;">Amazon Acadêmico</a>
-        </div>
-    </div>
+{% extends 'base.html' %}
 
-    <div class="container">
-        <div class="breadcrumb">
-            <a href="{% url 'catalog:index' %}">Catálogo</a>
-            {% if categoria_selecionada %}
-                / <a href="{% url 'catalog:category' categoria_selecionada.pk %}">{{ categoria_selecionada }}</a>
-            {% endif %}
-            / {{ produto.nome }}
-        </div>
+{% block title %}{{ produto.nome }} | Amazon Acadêmico{% endblock %}
 
-        <div class="card" style="margin-top: 20px;">
-            <h1>{{ produto.nome }}</h1>
-            <div class="meta">
-                <span class="badge">{{ produto.get_tipo_display }}</span>
-                {% if produto.em_estoque %}
-                    <span>Disponível em estoque</span>
-                {% else %}
-                    <span>Indisponível no momento</span>
-                {% endif %}
+{% block content %}
+<nav class="breadcrumb small" aria-label="Caminho de navegação">
+    <a href="{% url 'catalog:index' %}">Catálogo</a>
+    {% if categoria_selecionada %}<span aria-hidden="true">/</span><a href="{% url 'catalog:category' categoria_selecionada.pk %}">{{ categoria_selecionada }}</a>{% endif %}
+    <span aria-hidden="true">/</span><span aria-current="page">{{ produto.nome }}</span>
+</nav>
+
+<article class="surface-card product-detail p-3 p-md-4 p-xl-5">
+    <div class="row g-4 g-xl-5 align-items-start">
+        <div class="col-12 col-lg-5">
+            <div class="detail-art {% if produto.tipo == 'LIVRO' %}book-art{% else %}device-art{% endif %}" role="img" aria-label="Imagem ilustrativa de {{ produto.get_tipo_display }}">
+                <span aria-hidden="true">{% if produto.tipo == 'LIVRO' %}📚{% else %}⌨️{% endif %}</span>
+                <small>Imagem ilustrativa</small>
             </div>
-
-            <div class="price">R$ {{ produto.preco|floatformat:2 }}</div>
-
-            <p>{{ produto.descricao }}</p>
+        </div>
+        <div class="col-12 col-lg-7">
+            <p class="eyebrow">{{ produto.get_tipo_display }} · {{ produto.categoria }}</p>
+            <h1 class="display-6 fw-bold">{{ produto.nome }}</h1>
+            {% if produto.em_estoque %}<p class="stock-status in-stock">Disponível em estoque</p>{% else %}<p class="stock-status out-of-stock">Indisponível no momento</p>{% endif %}
+            <p class="detail-price">R$ {{ produto.preco|floatformat:2 }}</p>
+            <p class="detail-description">{{ produto.descricao|linebreaksbr }}</p>
 
             {% if produto.tipo == 'LIVRO' %}
-                <h3>Informações do livro</h3>
-                <ul>
-                    <li><strong>ISBN:</strong> {{ especializacao.isbn }}</li>
-                    <li><strong>Páginas:</strong> {{ especializacao.numero_paginas }}</li>
-                    <li><strong>Idioma:</strong> {{ especializacao.idioma }}</li>
-                    <li><strong>Editora:</strong> {{ especializacao.editora }}</li>
-                    <li><strong>Autores:</strong>
-                        {% for autor in especializacao.autores.all %}
-                            {% if not forloop.first %}, {% endif %}{{ autor.nome }}
-                        {% empty %}
-                            —
-                        {% endfor %}
-                    </li>
-                </ul>
+                <section class="detail-facts" aria-labelledby="specific-details">
+                    <h2 class="h5" id="specific-details">Sobre o livro</h2>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">ISBN</dt><dd class="col-sm-8">{{ especializacao.isbn }}</dd>
+                        <dt class="col-sm-4">Páginas</dt><dd class="col-sm-8">{{ especializacao.numero_paginas }}</dd>
+                        <dt class="col-sm-4">Idioma</dt><dd class="col-sm-8">{{ especializacao.idioma }}</dd>
+                        <dt class="col-sm-4">Editora</dt><dd class="col-sm-8">{{ especializacao.editora }}</dd>
+                        <dt class="col-sm-4">Autores</dt><dd class="col-sm-8">{% for autor in especializacao.autores.all %}{% if not forloop.first %}, {% endif %}{{ autor.nome }}{% empty %}—{% endfor %}</dd>
+                    </dl>
+                </section>
             {% else %}
-                <h3>Informações do eletrônico</h3>
-                <ul>
-                    <li><strong>Modelo:</strong> {{ especializacao.modelo }}</li>
-                    <li><strong>Garantia:</strong> {{ especializacao.garantia_meses }} meses</li>
-                    <li><strong>Fabricante:</strong> {{ especializacao.fabricante }}</li>
-                </ul>
+                <section class="detail-facts" aria-labelledby="specific-details">
+                    <h2 class="h5" id="specific-details">Sobre o eletrônico</h2>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Modelo</dt><dd class="col-sm-8">{{ especializacao.modelo }}</dd>
+                        <dt class="col-sm-4">Garantia</dt><dd class="col-sm-8">{{ especializacao.garantia_meses }} meses</dd>
+                        <dt class="col-sm-4">Fabricante</dt><dd class="col-sm-8">{{ especializacao.fabricante }}</dd>
+                    </dl>
+                </section>
             {% endif %}
 
-            <p><strong>Categoria:</strong> {{ produto.categoria }}</p>
-
-            <p>
-                <a href="{% url 'catalog:index' %}"><button type="button">Voltar ao catálogo</button></a>
-            </p>
+            <section class="add-to-cart-box mt-4" aria-labelledby="add-to-cart-heading">
+                <h2 class="h6" id="add-to-cart-heading">Adicionar ao carrinho</h2>
+                <label class="form-label" for="quantity">Quantidade</label>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <input class="form-control quantity-input" type="number" id="quantity" name="quantidade" min="1" max="{{ produto.estoque }}" value="1" {% if not produto.em_estoque %}disabled{% endif %}>
+                    <button class="btn btn-warning px-4" type="button" disabled aria-describedby="cart-integration-note">Adicionar ao carrinho</button>
+                </div>
+                <p class="small text-secondary mt-2 mb-0" id="cart-integration-note">A integração de adição ainda depende da rota do carrinho.</p>
+            </section>
+            <a class="btn btn-link px-0 mt-3" href="{% url 'catalog:index' %}">← Voltar ao catálogo</a>
         </div>
     </div>
-</body>
-</html>
+</article>
+{% endblock %}

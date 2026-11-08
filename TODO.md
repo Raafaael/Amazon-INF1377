@@ -156,15 +156,15 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 
 **Checklist**
 
-- [ ] Criar `base.html` reutilizável com **cabeçalho**, navegação, acesso ao catálogo, pesquisa, link para carrinho e área para mensagens do Django.
+- [x] Criar `base.html` reutilizável com **cabeçalho**, navegação, acesso ao catálogo, pesquisa, link para carrinho e área para mensagens do Django.
 - [ ] Montar a **Home** em formato de vitrine inspirado em lojas como Amazon, usando Bootstrap e CSS simples, sem copiar integralmente a identidade visual da empresa.
-- [ ] Montar **cards de produtos** com nome, preço, tipo, imagem ilustrativa/placeholder e link para detalhes.
-- [ ] Montar a **página de produto** com descrição, preço, informações relevantes, disponibilidade, quantidade e botão funcional de adicionar ao carrinho.
-- [ ] Montar **Meu Carrinho** com itens, quantidade editável, preço, subtotal, total, remoção com confirmação e estado vazio.
-- [ ] Criar **login simples** usando a autenticação nativa do Django, apenas para permitir o uso do carrinho. Não criar cadastro completo de clientes.
-- [ ] Integrar os formulários às URLs/views reais de Yuri e Pedro, respeitando CSRF, erros de validação e mensagens.
-- [ ] Verificar visualização em desktop e telas menores, mantendo layout organizado e navegação clara.
-- [ ] Validar que botões e links expostos realmente funcionam. **Não apresentar “Finalizar compra” como funcional nesta semana**; omitir ou sinalizar que ainda não está disponível.
+- [x] Montar **cards de produtos** com nome, preço, tipo, imagem ilustrativa/placeholder e link para detalhes.
+- [x] Montar a **página de produto** com descrição, preço, informações relevantes, disponibilidade, quantidade e botão funcional de adicionar ao carrinho.
+- [x] Montar **Meu Carrinho** com itens, quantidade editável, preço, subtotal, total, remoção com confirmação e estado vazio.
+- [x] Criar **login simples** usando a autenticação nativa do Django, apenas para permitir o uso do carrinho. Não criar cadastro completo de clientes.
+- [x] Integrar os formulários às URLs/views reais de Yuri e Pedro, respeitando CSRF, erros de validação e mensagens.
+- [x] Verificar visualização em desktop e telas menores, mantendo layout organizado e navegação clara.
+- [x] Validar que botões e links expostos realmente funcionam. **Não apresentar “Finalizar compra” como funcional nesta semana**; omitir ou sinalizar que ainda não está disponível.
 
 **Critério de conclusão:** as três telas pedidas (Home/Catálogo, Produto, Carrinho) são navegáveis e visualmente coerentes; o usuário consegue executar os fluxos ligados ao backend, sem interfaces extras fora do escopo.
 
