@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Meu carrinho | Amazon Acadêmico{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-4">
+    <div>
+        <p class="eyebrow mb-1">Sua seleção</p>
+        <h1 class="h2 mb-0">Meu carrinho</h1>
+    </div>
+    <a href="{% url 'catalog:index' %}" class="btn btn-outline-primary">Continuar comprando</a>
+</div>
+
+{% if not user.is_authenticated %}
+    <section class="surface-card empty-state py-5">
+        <div class="empty-icon" aria-hidden="true">🔐</div>
+        <h2 class="h4">Entre para acessar seu carrinho</h2>
+        <p class="text-secondary">O carrinho é associado à sua conta.</p>
+        <a class="btn btn-primary" href="{% url 'login' %}?next={% url 'cart:detail' %}">Entrar</a>
+    </section>
+{% elif itens %}
+    <div class="row g-4 align-items-start">
+        <section class="col-12 col-lg-8" aria-label="Itens do carrinho">
+            {% for item in itens %}
+                <article class="surface-card cart-item p-3 p-md-4 mb-3">
+                    <div class="row align-items-center g-3">
+                        <div class="col-3 col-md-2"><div class="cart-thumb" aria-hidden="true">{% if item.produto.tipo == 'LIVRO' %}📚{% else %}⌨️{% endif %}</div></div>
+                        <div class="col-9 col-md-5">
+                            <h2 class="h6 mb-1">{{ item.produto.nome }}</h2>
+                            <p class="small text-secondary mb-1">{{ item.produto.get_tipo_display }}</p>
+                            <p class="fw-semibold mb-0">R$ {{ item.produto.preco|floatformat:2 }} cada</p>
+                        </div>
+                        <form class="col-6 col-md-2" method="post" action="{% url 'cart:update' item.pk %}" onsubmit="return Number(this.elements.quantidade.value) !== 0 || confirm('Remover &quot;{{ item.produto.nome|escapejs }}&quot; do carrinho?');">
+                            {% csrf_token %}
+                            <label class="form-label small mb-1" for="quantity-{{ item.pk }}">Quantidade</label>
+                            <input class="form-control" id="quantity-{{ item.pk }}" name="quantidade" type="number" min="0" max="{{ item.produto.estoque }}" step="1" value="{{ item.quantidade }}" required>
+                            <button class="btn btn-sm btn-outline-primary w-100 mt-2" type="submit">Atualizar</button>
+                        </form>
+                        <div class="col-6 col-md-3 text-md-end">
+                            <span class="small text-secondary d-block">Subtotal</span>
+                            <strong>R$ {{ item.subtotal|floatformat:2 }}</strong>
+                            <form method="post" action="{% url 'cart:remove' item.pk %}" onsubmit="return confirm('Remover &quot;{{ item.produto.nome|escapejs }}&quot; do carrinho?');">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-link text-danger px-0 mt-1" type="submit">Remover</button>
+                            </form>
+                        </div>
+                    </div>
+                </article>
+            {% endfor %}
+        </section>
+        <aside class="col-12 col-lg-4">
+            <section class="surface-card p-4">
+                <h2 class="h5">Resumo do pedido</h2>
+                <div class="d-flex justify-content-between border-top pt-3 mt-3"><span>Total</span><strong>R$ {{ total|floatformat:2 }}</strong></div>
+                <button class="btn btn-warning w-100 mt-3" type="button" disabled>Finalizar compra indisponível</button>
+                <p class="small text-secondary mt-2 mb-0">A finalização da compra não faz parte desta etapa.</p>
+            </section>
+        </aside>
+    </div>
+{% else %}
+    <section class="surface-card empty-state py-5">
+        <div class="empty-icon" aria-hidden="true">🛒</div>
+        <h2 class="h4">Seu carrinho está vazio</h2>
+        <p class="text-secondary">Quando você adicionar produtos, eles aparecerão aqui.</p>
+        <a class="btn btn-primary" href="{% url 'catalog:index' %}">Explorar catálogo</a>
+    </section>
+{% endif %}
+{% endblock %}

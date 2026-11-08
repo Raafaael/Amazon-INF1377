@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}Entrar | Amazon Acadêmico{% endblock %}
+
+{% block content %}
+<div class="login-wrap">
+    <section class="surface-card login-card p-4 p-md-5" aria-labelledby="login-heading">
+        <p class="eyebrow">Sua conta</p>
+        <h1 class="h2 mb-2" id="login-heading">Boas-vindas</h1>
+        <p class="text-secondary mb-4">Entre para acessar as funções pessoais da sua conta.</p>
+        {% if form.errors %}
+            <div class="alert alert-danger" role="alert">Usuário ou senha inválidos. Confira os dados e tente novamente.</div>
+        {% endif %}
+        {% if next %}
+            {% if user.is_authenticated %}
+                <div class="alert alert-warning" role="alert">Sua conta não tem acesso a esta página.</div>
+            {% else %}
+                <div class="alert alert-info" role="status">Entre para continuar.</div>
+            {% endif %}
+        {% endif %}
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="mb-3">
+                <label class="form-label" for="id_username">Nome de usuário</label>
+                <input class="form-control form-control-lg" type="text" name="username" id="id_username" autocomplete="username" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label" for="id_password">Senha</label>
+                <input class="form-control form-control-lg" type="password" name="password" id="id_password" autocomplete="current-password" required>
+            </div>
+            <button class="btn btn-warning btn-lg w-100" type="submit">Entrar</button>
+        </form>
+        <p class="small text-secondary mt-4 mb-0">O acesso é feito pela autenticação padrão do Django.</p>
+    </section>
+</div>
+{% endblock %}

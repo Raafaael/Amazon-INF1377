@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ produto.nome }} | Amazon Acadêmico{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb small" aria-label="Caminho de navegação">
+    <a href="{% url 'catalog:index' %}">Catálogo</a>
+    {% if categoria_selecionada %}<span aria-hidden="true">/</span><a href="{% url 'catalog:category' categoria_selecionada.pk %}">{{ categoria_selecionada }}</a>{% endif %}
+    <span aria-hidden="true">/</span><span aria-current="page">{{ produto.nome }}</span>
+</nav>
+
+<article class="surface-card product-detail p-3 p-md-4 p-xl-5">
+    <div class="row g-4 g-xl-5 align-items-start">
+        <div class="col-12 col-lg-5">
+            <div class="detail-art {% if produto.tipo == 'LIVRO' %}book-art{% else %}device-art{% endif %}" role="img" aria-label="Imagem ilustrativa de {{ produto.get_tipo_display }}">
+                <span aria-hidden="true">{% if produto.tipo == 'LIVRO' %}📚{% else %}⌨️{% endif %}</span>
+                <small>Imagem ilustrativa</small>
+            </div>
+        </div>
+        <div class="col-12 col-lg-7">
+            <p class="eyebrow">{{ produto.get_tipo_display }} · {{ produto.categoria }}</p>
+            <h1 class="display-6 fw-bold">{{ produto.nome }}</h1>
+            {% if produto.em_estoque %}<p class="stock-status in-stock">Disponível em estoque</p>{% else %}<p class="stock-status out-of-stock">Indisponível no momento</p>{% endif %}
+            <p class="detail-price">R$ {{ produto.preco|floatformat:2 }}</p>
+            <p class="detail-description">{{ produto.descricao|linebreaksbr }}</p>
+
+            {% if produto.tipo == 'LIVRO' %}
+                <section class="detail-facts" aria-labelledby="specific-details">
+                    <h2 class="h5" id="specific-details">Sobre o livro</h2>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">ISBN</dt><dd class="col-sm-8">{{ especializacao.isbn }}</dd>
+                        <dt class="col-sm-4">Páginas</dt><dd class="col-sm-8">{{ especializacao.numero_paginas }}</dd>
+                        <dt class="col-sm-4">Idioma</dt><dd class="col-sm-8">{{ especializacao.idioma }}</dd>
+                        <dt class="col-sm-4">Editora</dt><dd class="col-sm-8">{{ especializacao.editora }}</dd>
+                        <dt class="col-sm-4">Autores</dt><dd class="col-sm-8">{% for autor in especializacao.autores.all %}{% if not forloop.first %}, {% endif %}{{ autor.nome }}{% empty %}—{% endfor %}</dd>
+                    </dl>
+                </section>
+            {% else %}
+                <section class="detail-facts" aria-labelledby="specific-details">
+                    <h2 class="h5" id="specific-details">Sobre o eletrônico</h2>
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Modelo</dt><dd class="col-sm-8">{{ especializacao.modelo }}</dd>
+                        <dt class="col-sm-4">Garantia</dt><dd class="col-sm-8">{{ especializacao.garantia_meses }} meses</dd>
+                        <dt class="col-sm-4">Fabricante</dt><dd class="col-sm-8">{{ especializacao.fabricante }}</dd>
+                    </dl>
+                </section>
+            {% endif %}
+
+            <form class="add-to-cart-box mt-4" method="post" action="{% url 'cart:add' produto.pk %}" aria-labelledby="add-to-cart-heading">
+                {% csrf_token %}
+                <h2 class="h6" id="add-to-cart-heading">Adicionar ao carrinho</h2>
+                <label class="form-label" for="quantity">Quantidade</label>
+                <div class="d-flex flex-wrap gap-2 align-items-center">
+                    <input class="form-control quantity-input" type="number" id="quantity" name="quantidade" min="1" max="{{ produto.estoque }}" step="1" value="1" required {% if not produto.em_estoque %}disabled{% endif %}>
+                    <button class="btn btn-warning px-4" type="submit" {% if not produto.em_estoque %}disabled{% endif %}>Adicionar ao carrinho</button>
+                </div>
+            </form>
+            <a class="btn btn-link px-0 mt-3" href="{% url 'catalog:index' %}">← Voltar ao catálogo</a>
+        </div>
+    </div>
+</article>
+{% endblock %}

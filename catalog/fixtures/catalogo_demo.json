@@ -1,0 +1,39 @@
+[
+  {"model": "catalog.categoria", "pk": 1, "fields": {"nome": "Livros", "descricao": "Livros físicos", "pai": null}},
+  {"model": "catalog.categoria", "pk": 2, "fields": {"nome": "Ficção", "descricao": "Romances e contos", "pai": 1}},
+  {"model": "catalog.categoria", "pk": 3, "fields": {"nome": "Tecnologia", "descricao": "Programação e computação", "pai": 1}},
+  {"model": "catalog.categoria", "pk": 4, "fields": {"nome": "Eletrônicos", "descricao": "Aparelhos eletrônicos", "pai": null}},
+  {"model": "catalog.categoria", "pk": 5, "fields": {"nome": "Celulares", "descricao": "Smartphones", "pai": 4}},
+  {"model": "catalog.categoria", "pk": 6, "fields": {"nome": "Notebooks", "descricao": "Computadores portáteis", "pai": 4}},
+
+  {"model": "catalog.idioma", "pk": 1, "fields": {"nome": "Português"}},
+  {"model": "catalog.idioma", "pk": 2, "fields": {"nome": "Inglês"}},
+
+  {"model": "catalog.autor", "pk": 1, "fields": {"nome": "Ana Ribeiro (fictícia)", "biografia": "Autora fictícia para demonstração."}},
+  {"model": "catalog.autor", "pk": 2, "fields": {"nome": "Carlos Mendes (fictício)", "biografia": "Autor fictício para demonstração."}},
+  {"model": "catalog.autor", "pk": 3, "fields": {"nome": "Joan Smith (fictícia)", "biografia": "Autora fictícia para demonstração."}},
+
+  {"model": "catalog.editora", "pk": 1, "fields": {"nome": "Editora Exemplo"}},
+  {"model": "catalog.editora", "pk": 2, "fields": {"nome": "Demo Press"}},
+
+  {"model": "catalog.fabricante", "pk": 1, "fields": {"nome": "TechDemo", "descricao": "Fabricante fictício para demonstração."}},
+  {"model": "catalog.fabricante", "pk": 2, "fields": {"nome": "Volt Eletrônicos", "descricao": "Fabricante fictício para demonstração."}},
+
+  {"model": "catalog.produto", "pk": 1, "fields": {"nome": "O Rio das Horas", "descricao": "Romance fictício usado como dado de demonstração do catálogo.", "preco": "49.90", "estoque": 12, "categoria": 2, "tipo": "LIVRO"}},
+  {"model": "catalog.livro", "pk": 1, "fields": {"isbn": "000-0-00000-001-0", "numero_paginas": 320, "idioma": 1, "editora": 1, "autores": [1]}},
+
+  {"model": "catalog.produto", "pk": 2, "fields": {"nome": "Python na Prática", "descricao": "Livro técnico fictício sobre programação em Python.", "preco": "89.00", "estoque": 5, "categoria": 3, "tipo": "LIVRO"}},
+  {"model": "catalog.livro", "pk": 2, "fields": {"isbn": "000-0-00000-002-0", "numero_paginas": 450, "idioma": 1, "editora": 1, "autores": [1, 2]}},
+
+  {"model": "catalog.produto", "pk": 3, "fields": {"nome": "Web Basics", "descricao": "Livro técnico fictício em inglês sobre desenvolvimento web.", "preco": "120.50", "estoque": 0, "categoria": 3, "tipo": "LIVRO"}},
+  {"model": "catalog.livro", "pk": 3, "fields": {"isbn": "000-0-00000-003-0", "numero_paginas": 280, "idioma": 2, "editora": 2, "autores": [3]}},
+
+  {"model": "catalog.produto", "pk": 4, "fields": {"nome": "Smartphone TD-10", "descricao": "Smartphone fictício com tela de 6,5 polegadas e 128 GB.", "preco": "1899.00", "estoque": 8, "categoria": 5, "tipo": "ELETRONICO"}},
+  {"model": "catalog.eletronico", "pk": 4, "fields": {"modelo": "TD-10", "garantia_meses": 12, "fabricante": 1}},
+
+  {"model": "catalog.produto", "pk": 5, "fields": {"nome": "Smartphone Volt X", "descricao": "Smartphone fictício com bateria de longa duração.", "preco": "1299.90", "estoque": 15, "categoria": 5, "tipo": "ELETRONICO"}},
+  {"model": "catalog.eletronico", "pk": 5, "fields": {"modelo": "VX-2", "garantia_meses": 12, "fabricante": 2}},
+
+  {"model": "catalog.produto", "pk": 6, "fields": {"nome": "Notebook TD Book 14", "descricao": "Notebook fictício com 16 GB de memória e SSD de 512 GB.", "preco": "4599.00", "estoque": 3, "categoria": 6, "tipo": "ELETRONICO"}},
+  {"model": "catalog.eletronico", "pk": 6, "fields": {"modelo": "TDB-14", "garantia_meses": 24, "fabricante": 1}}
+]

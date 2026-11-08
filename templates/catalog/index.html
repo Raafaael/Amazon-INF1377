@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Catálogo | Amazon Acadêmico{% endblock %}
+
+{% block content %}
+<section class="store-hero mb-4">
+    <div>
+        <p class="eyebrow">Encontre sua próxima descoberta</p>
+        <h1>Boas escolhas começam por aqui.</h1>
+        <p class="mb-0">Explore livros e eletrônicos selecionados para você.</p>
+    </div>
+    <div class="hero-decoration" aria-hidden="true">✦</div>
+</section>
+
+<div class="row g-4">
+    <aside class="col-12 col-lg-3">
+        <section class="surface-card p-3 p-xl-4">
+            <h2 class="h5 mb-3">Categorias</h2>
+            <ul class="category-list">
+                <li><a href="{% url 'catalog:index' %}">Todos os produtos</a></li>
+                {% for categoria in categorias %}
+                    <li>
+                        <a href="{% url 'catalog:category' categoria.pk %}">{{ categoria.nome }}</a>
+                        {% if categoria.subcategorias.all %}
+                            <ul>
+                                {% for subcategoria in categoria.subcategorias.all %}
+                                    <li><a href="{% url 'catalog:category' subcategoria.pk %}">{{ subcategoria.nome }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </li>
+                {% empty %}
+                    <li class="text-secondary small">As categorias aparecerão aqui.</li>
+                {% endfor %}
+            </ul>
+        </section>
+    </aside>
+
+    <section class="col-12 col-lg-9" aria-labelledby="catalog-heading">
+        <div class="surface-card p-3 p-xl-4 mb-4">
+            <div class="d-flex flex-column flex-xl-row justify-content-between align-items-xl-end gap-3 mb-3">
+                <div>
+                    <p class="eyebrow mb-1">Vitrine</p>
+                    <h2 class="h3 mb-1" id="catalog-heading">{% if categoria_selecionada %}{{ categoria_selecionada }}{% else %}Catálogo{% endif %}</h2>
+                    <p class="text-secondary mb-0">
+                        {% if total_produtos %}{{ total_produtos }} produto{{ total_produtos|pluralize }}{% else %}Nenhum produto encontrado{% endif %}
+                    </p>
+                </div>
+                <form class="filter-form" method="get" action="{% if categoria_selecionada %}{% url 'catalog:category' categoria_selecionada.pk %}{% else %}{% url 'catalog:index' %}{% endif %}">
+                    <label class="visually-hidden" for="min-price">Preço mínimo</label>
+                    <input class="form-control" id="min-price" type="number" name="min_price" value="{{ min_preco|default:'' }}" min="0" step="0.01" placeholder="Mínimo R$">
+                    <label class="visually-hidden" for="max-price">Preço máximo</label>
+                    <input class="form-control" id="max-price" type="number" name="max_price" value="{{ max_preco|default:'' }}" min="0" step="0.01" placeholder="Máximo R$">
+                    <label class="visually-hidden" for="manufacturer">Fabricante</label>
+                    <select class="form-select" id="manufacturer" name="fabricante">
+                        <option value="">Fabricante</option>
+                        {% for fabricante in fabricantes %}
+                            <option value="{{ fabricante.pk }}" {% if fabricante_selecionado == fabricante.pk %}selected{% endif %}>{{ fabricante.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <button class="btn btn-primary" type="submit">Filtrar</button>
+                    {% if categoria_selecionada %}
+                        <a class="btn btn-link" href="{% url 'catalog:category' categoria_selecionada.pk %}">Limpar</a>
+                    {% else %}
+                        <a class="btn btn-link" href="{% url 'catalog:index' %}">Limpar</a>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+
+        {% if page_obj.object_list %}
+            <div class="product-grid">
+                {% for produto in page_obj.object_list %}
+                    <article class="product-card">
+                        <a class="product-art {% if produto.tipo == 'LIVRO' %}book-art{% else %}device-art{% endif %}" href="{% url 'catalog:product_detail' produto.pk %}" aria-label="Ver {{ produto.nome }}">
+                            <span aria-hidden="true">{% if produto.tipo == 'LIVRO' %}📚{% else %}⌨️{% endif %}</span>
+                            <small>{{ produto.get_tipo_display }}</small>
+                        </a>
+                        <div class="product-card-body">
+                            <p class="product-category">{{ produto.categoria }}</p>
+                            <h3><a href="{% url 'catalog:product_detail' produto.pk %}">{{ produto.nome }}</a></h3>
+                            <p class="product-price">R$ {{ produto.preco|floatformat:2 }}</p>
+                            {% if produto.em_estoque %}<span class="stock-status in-stock">Em estoque</span>{% else %}<span class="stock-status out-of-stock">Indisponível</span>{% endif %}
+                            <a class="btn btn-outline-primary w-100 mt-3" href="{% url 'catalog:product_detail' produto.pk %}">Ver produto</a>
+                        </div>
+                    </article>
+                {% endfor %}
+            </div>
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="mt-4" aria-label="Paginação do catálogo">
+                    <ul class="pagination justify-content-center flex-wrap">
+                        {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ termo_busca|urlencode }}&min_price={{ min_preco|urlencode }}&max_price={{ max_preco|urlencode }}&fabricante={{ fabricante_selecionado }}">Anterior</a></li>{% endif %}
+                        <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
+                        {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ termo_busca|urlencode }}&min_price={{ min_preco|urlencode }}&max_price={{ max_preco|urlencode }}&fabricante={{ fabricante_selecionado }}">Próxima</a></li>{% endif %}
+                    </ul>
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="surface-card empty-state">
+                <div class="empty-icon" aria-hidden="true">⌕</div>
+                <h3 class="h4">Não encontramos produtos</h3>
+                <p class="text-secondary">Tente outra busca ou remova alguns filtros.</p>
+                <a class="btn btn-primary" href="{% url 'catalog:index' %}">Ver todo o catálogo</a>
+            </div>
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
