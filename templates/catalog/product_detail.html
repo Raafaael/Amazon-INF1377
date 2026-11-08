@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ produto.nome }} | Amazon Acadêmico</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+        .topbar { background: #131921; color: white; padding: 16px 24px; }
+        .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+        .breadcrumb a, .link { color: #1a73e8; text-decoration: none; }
+        .card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 9px rgba(0,0,0,0.06); }
+        .meta { display: flex; gap: 16px; flex-wrap: wrap; color: #666; }
+        .price { font-size: 2rem; font-weight: bold; margin: 18px 0; }
+        .badge { display: inline-block; background: #eef5ff; color: #0d4ec7; padding: 5px 10px; border-radius: 999px; font-size: 12px; }
+        ul { padding-left: 18px; }
+        a button { cursor: pointer; }
+        button { background: #ffd814; border: 1px solid #fcd200; border-radius: 999px; padding: 10px 18px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="container">
+            <a class="link" href="{% url 'catalog:index' %}" style="color: white; text-decoration: none;">Amazon Acadêmico</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="breadcrumb">
+            <a href="{% url 'catalog:index' %}">Catálogo</a>
+            {% if categoria_selecionada %}
+                / <a href="{% url 'catalog:category' categoria_selecionada.pk %}">{{ categoria_selecionada }}</a>
+            {% endif %}
+            / {{ produto.nome }}
+        </div>
+
+        <div class="card" style="margin-top: 20px;">
+            <h1>{{ produto.nome }}</h1>
+            <div class="meta">
+                <span class="badge">{{ produto.get_tipo_display }}</span>
+                {% if produto.em_estoque %}
+                    <span>Disponível em estoque</span>
+                {% else %}
+                    <span>Indisponível no momento</span>
+                {% endif %}
+            </div>
+
+            <div class="price">R$ {{ produto.preco|floatformat:2 }}</div>
+
+            <p>{{ produto.descricao }}</p>
+
+            {% if produto.tipo == 'LIVRO' %}
+                <h3>Informações do livro</h3>
+                <ul>
+                    <li><strong>ISBN:</strong> {{ especializacao.isbn }}</li>
+                    <li><strong>Páginas:</strong> {{ especializacao.numero_paginas }}</li>
+                    <li><strong>Idioma:</strong> {{ especializacao.idioma }}</li>
+                    <li><strong>Editora:</strong> {{ especializacao.editora }}</li>
+                    <li><strong>Autores:</strong>
+                        {% for autor in especializacao.autores.all %}
+                            {% if not forloop.first %}, {% endif %}{{ autor.nome }}
+                        {% empty %}
+                            —
+                        {% endfor %}
+                    </li>
+                </ul>
+            {% else %}
+                <h3>Informações do eletrônico</h3>
+                <ul>
+                    <li><strong>Modelo:</strong> {{ especializacao.modelo }}</li>
+                    <li><strong>Garantia:</strong> {{ especializacao.garantia_meses }} meses</li>
+                    <li><strong>Fabricante:</strong> {{ especializacao.fabricante }}</li>
+                </ul>
+            {% endif %}
+
+            <p><strong>Categoria:</strong> {{ produto.categoria }}</p>
+
+            <p>
+                <a href="{% url 'catalog:index' %}"><button type="button">Voltar ao catálogo</button></a>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

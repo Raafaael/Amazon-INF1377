@@ -3,10 +3,160 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Projeto Amazon</title>
+    <title>Catálogo | Amazon Acadêmico</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; background: #f5f5f5; color: #222; }
+        a { color: #0d4ec7; text-decoration: none; }
+        .topbar { background: #131921; color: white; padding: 16px 24px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        .catalog-layout { display: flex; gap: 24px; }
+        .sidebar { width: 260px; flex-shrink: 0; }
+        .content { flex: 1; }
+        .panel { background: white; border-radius: 12px; box-shadow: 0 2px 9px rgba(0,0,0,0.06); padding: 18px; margin-bottom: 20px; }
+        .search-row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .search-row input, .search-row select, .search-row button { padding: 10px 14px; border-radius: 8px; border: 1px solid #d5d9d9; }
+        .search-row button { background: #ffd814; border-color: #fcd200; cursor: pointer; }
+        .category-list { list-style: none; padding: 0; margin: 0; }
+        .category-list li { margin: 8px 0; }
+        .category-list ul { list-style: none; padding-left: 16px; margin-top: 6px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+        .product-card { background: white; border-radius: 12px; box-shadow: 0 2px 9px rgba(0,0,0,0.06); padding: 18px; }
+        .product-card h3 { margin-top: 0; }
+        .price { font-size: 1.4rem; font-weight: bold; margin: 10px 0; }
+        .badge { display: inline-block; background: #eef5ff; color: #0d4ec7; padding: 5px 8px; border-radius: 999px; font-size: 12px; margin-bottom: 8px;}
+        .availability { font-size: 0.85rem; }
+        .empty-state { background: white; border-radius: 12px; padding: 22px; text-align: center; }
+        .message-list { list-style: none; padding-left: 0; margin: 0 0 16px; }
+        .message-list li { background: #fff3cd; color: #7a4d00; border: 1px solid #ffe7a1; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; }
+        .pagination { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 20px; }
+        .page-button { padding: 8px 12px; border: 1px solid #d5d9d9; background: white; border-radius: 8px; }
+        .page-button.current { background: #131921; color: white; border-color: #131921; }
+        @media (max-width: 820px) { .catalog-layout { display: block; } .sidebar { width: 100%; } }
+    </style>
 </head>
 <body>
-    <h1>Projeto Amazon em desenvolvimento</h1>
-    <p>O catálogo será implementado na próxima etapa.</p>
+    <div class="topbar">
+        <div class="container">
+            <strong>Amazon Acadêmico</strong>
+        </div>
+    </div>
+
+    <div class="container">
+        {% if messages %}
+            <ul class="message-list">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="panel">
+            <form method="get" action="{% if categoria_selecionada %}{% url 'catalog:category' categoria_selecionada.pk %}{% else %}{% url 'catalog:index' %}{% endif %}">
+                <div class="search-row">
+                    <input type="text" name="q" value="{{ termo_busca }}" placeholder="Buscar por nome do produto" style="flex: 1; min-width: 180px;">
+                    <input type="number" name="min_price" value="{{ min_preco|default:'' }}" step="any" inputmode="decimal" min="0" placeholder="Preço mínimo">
+                    <input type="number" name="max_price" value="{{ max_preco|default:'' }}" step="any" inputmode="decimal" min="0" placeholder="Preço máximo">
+                    <select name="fabricante">
+                        <option value="">Todos os fabricantes</option>
+                        {% for fabricante in fabricantes %}
+                            <option value="{{ fabricante.pk }}" {% if fabricante_selecionado == fabricante.pk %}selected{% endif %}>{{ fabricante.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Buscar</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="catalog-layout">
+            <aside class="sidebar panel">
+                <h2>Categorias</h2>
+                <ul class="category-list">
+                    <li>
+                        <a href="{% url 'catalog:index' %}">Todos os produtos</a>
+                    </li>
+                    {% for categoria in categorias %}
+                        <li>
+                            <a href="{% url 'catalog:category' categoria.pk %}">{{ categoria.nome }}</a>
+                            {% if categoria.subcategorias.all %}
+                                <ul>
+                                    {% for subcategoria in categoria.subcategorias.all %}
+                                        <li>
+                                            <a href="{% url 'catalog:category' subcategoria.pk %}">{{ subcategoria.nome }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </aside>
+
+            <main class="content">
+                <div class="panel">
+                    {% if categoria_selecionada %}
+                        <h2>{{ categoria_selecionada }}</h2>
+                    {% else %}
+                        <h2>Catálogo</h2>
+                    {% endif %}
+                    <p>
+                        {% if total_produtos %}
+                            Mostrando {{ page_obj.object_list|length }} de {{ total_produtos }} produto{{ total_produtos|pluralize }}
+                        {% else %}
+                            Nenhum produto encontrado.
+                        {% endif %}
+                    </p>
+                </div>
+
+                {% if page_obj.object_list %}
+                    <div class="grid">
+                        {% for produto in page_obj.object_list %}
+                            <article class="product-card">
+                                <div class="badge">{{ produto.get_tipo_display }}</div>
+                                <h3><a href="{% url 'catalog:product_detail' produto.pk %}">{{ produto.nome }}</a></h3>
+                                <p><small>{{ produto.categoria }}</small></p>
+                                <div class="price">R$ {{ produto.preco|floatformat:2 }}</div>
+                                {% if produto.em_estoque %}
+                                    <div class="availability" style="color: green;">Disponível</div>
+                                {% else %}
+                                    <div class="availability" style="color: #b33;">Indisponível</div>
+                                {% endif %}
+                                {% if produto.tipo == 'ELETRONICO' %}
+                                    <p><strong>Fabricante:</strong> {{ produto.eletronico.fabricante }}</p>
+                                {% else %}
+                                    <p><strong>Autor:</strong> {% if produto.livro.autores.all %}{{ produto.livro.autores.all.0.nome }}{% else %}—{% endif %}</p>
+                                {% endif %}
+                            </article>
+                        {% endfor %}
+                    </div>
+
+                    {% if page_obj.paginator.num_pages > 1 %}
+                        <div class="pagination">
+                            {% if page_obj.has_previous %}
+                                <a class="page-button" href="?page={{ page_obj.previous_page_number }}{% if termo_busca %}&q={{ termo_busca }}{% endif %}{% if categoria_selecionada %}&categoria={{ categoria_selecionada.pk }}{% endif %}{% if min_preco is not None %}&min_price={{ min_preco }}{% endif %}{% if max_preco is not None %}&max_price={{ max_preco }}{% endif %}{% if fabricante_selecionado %}&fabricante={{ fabricante_selecionado }}{% endif %}">Anterior</a>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}
+                                    <span class="page-button current">{{ num }}</span>
+                                {% else %}
+                                    <a class="page-button" href="?page={{ num }}{% if termo_busca %}&q={{ termo_busca }}{% endif %}{% if categoria_selecionada %}&categoria={{ categoria_selecionada.pk }}{% endif %}{% if min_preco is not None %}&min_price={{ min_preco }}{% endif %}{% if max_preco is not None %}&max_price={{ max_preco }}{% endif %}{% if fabricante_selecionado %}&fabricante={{ fabricante_selecionado }}{% endif %}">{{ num }}</a>
+                                {% endif %}
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}
+                                <a class="page-button" href="?page={{ page_obj.next_page_number }}{% if termo_busca %}&q={{ termo_busca }}{% endif %}{% if categoria_selecionada %}&categoria={{ categoria_selecionada.pk }}{% endif %}{% if min_preco is not None %}&min_price={{ min_preco }}{% endif %}{% if max_preco is not None %}&max_price={{ max_preco }}{% endif %}{% if fabricante_selecionado %}&fabricante={{ fabricante_selecionado }}{% endif %}">Próxima</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="empty-state">
+                        <h3>Nenhum produto encontrado.</h3>
+                        <p>Tente outra busca, limpe os filtros ou escolha outra categoria.</p>
+                        <p><a href="{% if categoria_selecionada %}{% url 'catalog:category' categoria_selecionada.pk %}{% else %}{% url 'catalog:index' %}{% endif %}">Limpar filtros</a></p>
+                    </div>
+                {% endif %}
+            </main>
+        </div>
+    </div>
 </body>
 </html>
