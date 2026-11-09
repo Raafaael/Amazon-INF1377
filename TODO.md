@@ -52,22 +52,22 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 
 ## T01 — Breno · Inicializar o projeto Django
 
-**Prioridade:** bloqueante · **Estado:** [ ] Não iniciado
+**Prioridade:** bloqueante · **Estado:** [x] Concluído
 
 **Objetivo:** partindo de um repositório vazio, deixar o Django **instalável, iniciável e acessível no navegador**, sem adiantar a lógica de catálogo/carrinho.
 
 **Checklist**
 
-- [ ] Criar e testar ambiente virtual local `.venv` e arquivo `requirements.txt` com dependências realmente usadas.
-- [ ] Inicializar o projeto Django (`manage.py`, `config/settings.py`, `config/urls.py` etc.).
-- [ ] Criar a estrutura mínima dos apps `catalog` e `cart`, registrá-los em `INSTALLED_APPS` e deixar URLs iniciais válidas, mesmo que ainda sejam placeholders.
-- [ ] Disponibilizar a rota `/` com uma página provisória simples (ex.: “Projeto Amazon em desenvolvimento”), sem tentar implementar o catálogo.
-- [ ] Manter `templates/` e `static/` configurados para o Davi trabalhar depois; evitar criar o layout definitivo.
-- [ ] Habilitar o Django Admin e o mecanismo de autenticação padrão; deixar rota de login disponível para a interface posterior.
-- [ ] Configurar `.gitignore` para `.venv/`, `__pycache__/`, `.env`, banco local de desenvolvimento e outros arquivos gerados; nunca incluir segredos.
-- [ ] Atualizar `README.md` com requisitos, criação/ativação de `.venv` no Windows e Linux/macOS, instalação, `migrate`, criação de usuário administrador e `runserver`.
-- [ ] Executar `python manage.py check`, `python manage.py migrate` e iniciar `python manage.py runserver` para confirmar que a página inicial responde.
-- [ ] Registrar no README qual banco está efetivamente configurado e quais escolhas continuam provisórias.
+- [x] Criar e testar ambiente virtual local `.venv` e arquivo `requirements.txt` com dependências realmente usadas.
+- [x] Inicializar o projeto Django (`manage.py`, `config/settings.py`, `config/urls.py` etc.).
+- [x] Criar a estrutura mínima dos apps `catalog` e `cart`, registrá-los em `INSTALLED_APPS` e deixar URLs iniciais válidas, mesmo que ainda sejam placeholders.
+- [x] Disponibilizar a rota `/` com uma página provisória simples (ex.: “Projeto Amazon em desenvolvimento”), sem tentar implementar o catálogo.
+- [x] Manter `templates/` e `static/` configurados para o Davi trabalhar depois; evitar criar o layout definitivo.
+- [x] Habilitar o Django Admin e o mecanismo de autenticação padrão; deixar rota de login disponível para a interface posterior.
+- [x] Configurar `.gitignore` para `.venv/`, `__pycache__/`, `.env`, banco local de desenvolvimento e outros arquivos gerados; nunca incluir segredos.
+- [x] Atualizar `README.md` com requisitos, criação/ativação de `.venv` no Windows e Linux/macOS, instalação, `migrate`, criação de usuário administrador e `runserver`.
+- [x] Executar `python manage.py check`, `python manage.py migrate` e iniciar `python manage.py runserver` para confirmar que a página inicial responde.
+- [x] Registrar no README qual banco está efetivamente configurado e quais escolhas continuam provisórias.
 
 **Critério de conclusão:** outro integrante consegue seguir o README, executar a aplicação localmente e abrir `/` e `/admin/` **antes** de haver produtos ou carrinho implementados.
 
@@ -77,21 +77,21 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 
 ## T02 — Rafael · Modelos e cadastro de produtos
 
-**Prioridade:** alta · **Estado:** [ ] Não iniciado · **Dependência:** T01
+**Prioridade:** alta · **Estado:** [x] Concluído · **Dependência:** T01
 
 **Referência:** UC01, SRS `RF-CAT-01` a `RF-CAT-09` e regras `RN-01` a `RN-05`.
 
 **Checklist**
 
-- [ ] Implementar models mínimos para **Categoria**, **Produto** e especializações **Livro** e **Eletronico**, com relacionamentos coerentes com o modelo de domínio/relacional.
-- [ ] Contemplar os atributos exigidos: produto (nome, descrição, preço, estoque, categoria e tipo); livro (ISBN, páginas, idioma, autor, editora); eletrônico (modelo, garantia, fabricante).
-- [ ] Criar somente entidades de apoio necessárias ao cadastro (ex.: Autor, Editora, Fabricante e representação simples de Idioma), documentando decisões de modelagem relevantes.
-- [ ] Permitir categoria pai/subcategoria sem introduzir estrutura complexa desnecessária.
-- [ ] Registrar os models no **Django Admin** para cadastrar categorias e produtos de demonstração; usar o Admin como interface administrativa inicial, sem criar tela extra.
-- [ ] Validar obrigatoriedade de campos, estoque não negativo e preço **maior que R$ 0,00 e menor que R$ 10.000,00**, conforme o SRS v1.1. Registrar a divergência do fluxo A5 do UC01, sem liberar preços fora desse limite.
-- [ ] Gerar e testar migrações; confirmar que é possível cadastrar pelo menos **um Livro e um Eletrônico** vinculados a categorias.
-- [ ] Criar testes básicos de validação dos produtos e das relações essenciais.
-- [ ] Informar a Yuri e Pedro o contrato real dos models, os campos de preço/estoque e o caminho para consultar os produtos.
+- [x] Implementar models mínimos para **Categoria**, **Produto** e especializações **Livro** e **Eletronico**, com relacionamentos coerentes com o modelo de domínio/relacional.
+- [x] Contemplar os atributos exigidos: produto (nome, descrição, preço, estoque, categoria e tipo); livro (ISBN, páginas, idioma, autor, editora); eletrônico (modelo, garantia, fabricante).
+- [x] Criar somente entidades de apoio necessárias ao cadastro (ex.: Autor, Editora, Fabricante e representação simples de Idioma), documentando decisões de modelagem relevantes.
+- [x] Permitir categoria pai/subcategoria sem introduzir estrutura complexa desnecessária.
+- [x] Registrar os models no **Django Admin** para cadastrar categorias e produtos de demonstração; usar o Admin como interface administrativa inicial, sem criar tela extra.
+- [x] Validar obrigatoriedade de campos, estoque não negativo e preço **maior que R$ 0,00 e menor que R$ 10.000,00**, conforme o SRS v1.1. Registrar a divergência do fluxo A5 do UC01, sem liberar preços fora desse limite.
+- [x] Gerar e testar migrações; confirmar que é possível cadastrar pelo menos **um Livro e um Eletrônico** vinculados a categorias.
+- [x] Criar testes básicos de validação dos produtos e das relações essenciais.
+- [x] Informar a Yuri e Pedro o contrato real dos models, os campos de preço/estoque e o caminho para consultar os produtos.
 
 **Critério de conclusão:** produtos de ambos os tipos podem ser cadastrados/consultados pelo Django Admin, são persistidos corretamente e respeitam as regras básicas. Há dados suficientes para demonstrar a interface.
 
@@ -101,21 +101,23 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 
 ## T03 — Yuri · Catálogo público, navegação e filtros
 
-**Prioridade:** alta · **Estado:** [ ] Não iniciado · **Dependências:** T01, T02
+**Prioridade:** alta · **Estado:** [~] Em andamento · **Dependências:** T01, T02
 
 **Referências:** UC02, UC03; SRS `RF-FLT-01` a `RF-FLT-08`, `RN-20`; busca e detalhe previstos no levantamento.
 
 **Checklist**
 
-- [ ] Implementar a view/URL da **Home (`/`)** para exibir os produtos cadastrados por Rafael (substituindo o placeholder de Breno).
-- [ ] Implementar **navegação por categorias e subcategorias**; permitir clicar na categoria e visualizar seus produtos.
-- [ ] Implementar página de **detalhes do produto**, com nome, descrição, preço, disponibilidade, tipo e dados específicos do Livro/Eletrônico.
-- [ ] Implementar **busca simples por palavra-chave**, ao menos pelo nome do produto, para a barra de pesquisa da Home funcionar.
-- [ ] Implementar filtro por **faixa de preço** e, para eletrônicos, por **fabricante**; permitir limpar filtros e combinar os critérios suportados.
-- [ ] Validar preços dos filtros, tratar resultados vazios e paginar a listagem quando ultrapassar **50 produtos por página**.
-- [ ] Expor às templates dados claros e consistentes, sem montar HTML dentro das views. Combinar com Davi os nomes de templates, parâmetros e URLs.
+- [x] Implementar a view/URL da **Home (`/`)** para exibir os produtos cadastrados por Rafael (substituindo o placeholder de Breno).
+- [x] Implementar **navegação por categorias e subcategorias**; permitir clicar na categoria e visualizar seus produtos.
+- [x] Implementar página de **detalhes do produto**, com nome, descrição, preço, disponibilidade, tipo e dados específicos do Livro/Eletrônico.
+- [x] Implementar **busca simples por palavra-chave**, ao menos pelo nome do produto, para a barra de pesquisa da Home funcionar.
+- [x] Implementar filtro por **faixa de preço** e, para eletrônicos, por **fabricante**; permitir limpar filtros e combinar os critérios suportados.
+- [x] Validar preços dos filtros, tratar resultados vazios e paginar a listagem quando ultrapassar **50 produtos por página**.
+- [x] Expor às templates dados claros e consistentes, sem montar HTML dentro das views. Combinar com Davi os nomes de templates, parâmetros e URLs.
 - [ ] Testar listagem, detalhe, categoria vazia, filtros válidos/inválidos e paginação.
 - [ ] Registrar como **pendente de decisão** filtros do SRS que exigiriam informações não modeladas nesta etapa (ex.: avaliação média ou prazo estimado de entrega). Não inventar notas ou prazos falsos para fazer o filtro parecer funcional.
+
+**Verificação em 08/11/2026:** o teste `catalog.tests.test_views.CatalogoPublicoTests.test_categoria_e_detalhe_do_produto_respondem` falha porque espera “Informações do livro”, enquanto o template integrado exibe “Sobre o livro”. A funcionalidade de detalhe respondeu, mas o teste precisa ser alinhado ao texto atual ou o texto precisa ser revisto com Davi/Yuri. Os filtros de avaliação média e prazo seguem sem decisão documentada na T03.
 
 **Critério de conclusão:** a Home exibe produtos reais do banco; usuário navega até o detalhe, busca e filtra produtos e recebe mensagens adequadas se não houver resultado.
 
@@ -125,22 +127,24 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 
 ## T04 — Pedro · Funcionalidade do carrinho
 
-**Prioridade:** alta · **Estado:** [ ] Não iniciado · **Dependências:** T01 e modelo `Produto` de T02
+**Prioridade:** alta · **Estado:** [x] Concluído com pendência documentada · **Dependências:** T01 e modelo `Produto` de T02
 
 **Referências:** UC04 (consultar), UC05 (remover), UC11 (adicionar); SRS `RF-CAR-01` a `RF-CAR-09` e `RN-06` a `RN-08`.
 
 **Checklist**
 
-- [ ] Criar models **Carrinho** e **ItemCarrinho**, associados ao usuário autenticado e ao `Produto`, com migrações.
-- [ ] Implementar a consulta do carrinho do usuário, incluindo **carrinho vazio**.
-- [ ] Implementar **adicionar produto**, exigindo quantidade inteira positiva e disponível em estoque.
-- [ ] Se o produto já estiver no carrinho, **somar quantidades**, verificando o estoque considerando a quantidade total.
-- [ ] Implementar **alteração de quantidade** e **remoção completa do item**, com confirmação na interface antes de remover (coordenar com Davi).
-- [ ] Calcular `subtotal = preço unitário × quantidade` e `total = soma dos subtotais`; ao esvaziar, total deve ser zero.
-- [ ] Exigir autenticação nas operações de carrinho e garantir que ninguém consulte/edite itens de outro usuário.
-- [ ] Utilizar operações POST e proteção CSRF para alterações; retornar mensagens claras de sucesso/erro.
-- [ ] Criar testes para inclusão repetida, estoque insuficiente, quantidade inválida, remoção, total, carrinho vazio e isolamento entre usuários.
+- [x] Criar models **Carrinho** e **ItemCarrinho**, associados ao usuário autenticado e ao `Produto`, com migrações.
+- [x] Implementar a consulta do carrinho do usuário, incluindo **carrinho vazio**.
+- [x] Implementar **adicionar produto**, exigindo quantidade inteira positiva e disponível em estoque.
+- [x] Se o produto já estiver no carrinho, **somar quantidades**, verificando o estoque considerando a quantidade total.
+- [x] Implementar **alteração de quantidade** e **remoção completa do item**, com confirmação na interface antes de remover (coordenar com Davi).
+- [x] Calcular `subtotal = preço unitário × quantidade` e `total = soma dos subtotais`; ao esvaziar, total deve ser zero.
+- [x] Exigir autenticação nas operações de carrinho e garantir que ninguém consulte/edite itens de outro usuário.
+- [x] Utilizar operações POST e proteção CSRF para alterações; retornar mensagens claras de sucesso/erro.
+- [x] Criar testes para inclusão repetida, estoque insuficiente, quantidade inválida, remoção, total, carrinho vazio e isolamento entre usuários.
 - [ ] Combinar com Davi campos, ações e nomes de URLs usados pelo formulário e pela tela do carrinho.
+
+**Verificação em 08/11/2026:** os 25 testes de `cart` passaram e os templates usam as rotas reais. A auditoria de Pedro ainda pede avisar Davi sobre as edições feitas nos templates; não há evidência de que essa comunicação ocorreu.
 
 **Critério de conclusão:** com usuário autenticado, é possível adicionar um produto a partir do catálogo, visualizar o carrinho, alterar/remover itens e ver todos os valores atualizados corretamente.
 
@@ -150,14 +154,14 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 
 ## T05 — Davi · Interface visual da Home, produto e carrinho
 
-**Prioridade:** alta · **Estado:** [ ] Não iniciado · **Dependências:** T01; integração com T03 e T04
+**Prioridade:** alta · **Estado:** [~] Em andamento · **Dependências:** T01; integração com T03 e T04
 
 **Referências:** mockups da seção 3.1 do SRS, especialmente **Home**, **Página de Produto** e **Meu Carrinho**.
 
 **Checklist**
 
 - [x] Criar `base.html` reutilizável com **cabeçalho**, navegação, acesso ao catálogo, pesquisa, link para carrinho e área para mensagens do Django.
-- [ ] Montar a **Home** em formato de vitrine inspirado em lojas como Amazon, usando Bootstrap e CSS simples, sem copiar integralmente a identidade visual da empresa.
+- [x] Montar a **Home** em formato de vitrine inspirado em lojas como Amazon, usando Bootstrap e CSS simples, sem copiar integralmente a identidade visual da empresa.
 - [x] Montar **cards de produtos** com nome, preço, tipo, imagem ilustrativa/placeholder e link para detalhes.
 - [x] Montar a **página de produto** com descrição, preço, informações relevantes, disponibilidade, quantidade e botão funcional de adicionar ao carrinho.
 - [x] Montar **Meu Carrinho** com itens, quantidade editável, preço, subtotal, total, remoção com confirmação e estado vazio.
@@ -165,6 +169,8 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 - [x] Integrar os formulários às URLs/views reais de Yuri e Pedro, respeitando CSRF, erros de validação e mensagens.
 - [x] Verificar visualização em desktop e telas menores, mantendo layout organizado e navegação clara.
 - [x] Validar que botões e links expostos realmente funcionam. **Não apresentar “Finalizar compra” como funcional nesta semana**; omitir ou sinalizar que ainda não está disponível.
+
+**Verificação em 08/11/2026:** a estrutura da Home está nos templates e CSS; a auditoria anterior da T05 foi parcial e antecede a integração funcional posterior do carrinho. Falta revalidar visualmente e concluir a auditoria da integração com Davi. Os itens marcados como feitos representam código presente, não nova aprovação humana da T05.
 
 **Critério de conclusão:** as três telas pedidas (Home/Catálogo, Produto, Carrinho) são navegáveis e visualmente coerentes; o usuário consegue executar os fluxos ligados ao backend, sem interfaces extras fora do escopo.
 
@@ -183,7 +189,9 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 - [ ] Conferir que usuário A não acessa o carrinho de usuário B e que apenas administrador cadastra produtos.
 - [ ] Executar `python manage.py check` e `python manage.py test`; registrar eventuais falhas ainda existentes.
 - [ ] Confirmar que não existem links funcionais enganosos para checkout ou outras funcionalidades ainda não implementadas.
-- [ ] Atualizar README caso a forma real de execução tenha mudado.
+- [x] Atualizar README caso a forma real de execução tenha mudado.
+
+**Verificação técnica em 08/11/2026:** `manage.py check` passou; `makemigrations --check --dry-run` não detectou mudanças; `migrate` aplicou `catalog.0001_initial` e `cart.0001_initial` ao SQLite local; 31 testes de models/Admin do catálogo e 25 testes do carrinho passaram. A suíte completa executou 66 testes com 1 falha de expectativa textual no detalhe do livro (“Informações do livro” no teste × “Sobre o livro” no template). O banco local contém 0 produtos; a fixture de demonstração foi validada por testes, mas não carregada nele para evitar sobrescrever dados por PK. Portanto, os fluxos integrados com produtos reais no banco local e a conferência visual final permanecem pendentes.
 
 **Observação:** esta é uma conferência do **resultado integrado**, não uma sexta tarefa atribuída permanentemente a um integrante. Cada responsável deve testar sua entrega; a integração deve ser combinada pelo grupo.
 
