@@ -1,6 +1,6 @@
 # Projeto Amazon — INF1377
 
-Base local de um comércio eletrônico acadêmico. Nesta etapa, o projeto contém apenas a estrutura inicial do Django, páginas provisórias e autenticação padrão. Catálogo e carrinho ainda serão implementados pelos integrantes responsáveis.
+Base local de um comércio eletrônico acadêmico. Nesta entrega, o projeto já contém catálogo de livros e eletrônicos, cadastro pelo Django Admin, busca, filtros e carrinho para usuários autenticados. A interface visual está em integração e revisão.
 
 ## Requisitos
 
@@ -8,7 +8,7 @@ Base local de um comércio eletrônico acadêmico. Nesta etapa, o projeto conté
 - Navegador moderno.
 - Não é necessário instalar MySQL nem Docker para esta etapa.
 
-O banco configurado atualmente é **SQLite**, em `db.sqlite3`, apenas para desenvolvimento local. O uso de MySQL continua como proposta do grupo, sem decisão final. A interface futura usará Django Templates e poderá usar Bootstrap; nenhuma dependência de interface é necessária agora.
+O banco configurado atualmente é **SQLite**, em `db.sqlite3`, apenas para desenvolvimento local. O uso de MySQL continua como proposta do grupo, sem decisão final. A interface usa Django Templates e Bootstrap via CDN; é necessário acesso à rede para carregar o CSS e JavaScript do Bootstrap.
 
 ## Instalação e execução
 
@@ -44,10 +44,12 @@ As instruções desta seção valem **tanto para Windows quanto para Linux/macOS
 
 Depois de executar `python manage.py runserver`, abra:
 
-- <http://127.0.0.1:8000/> — página inicial provisória;
+- <http://127.0.0.1:8000/> — catálogo;
 - <http://127.0.0.1:8000/admin/> — Administração do Django; entre com o superusuário criado acima;
-- <http://127.0.0.1:8000/accounts/login/> — tela de login padrão, ainda sem layout definitivo; a conta criada acima também pode entrar aqui e será redirecionada à página inicial;
-- <http://127.0.0.1:8000/carrinho/> — página provisória do app `cart`.
+- <http://127.0.0.1:8000/accounts/login/> — tela de login; a conta criada acima também pode entrar aqui e será redirecionada à página inicial;
+- <http://127.0.0.1:8000/carrinho/> — carrinho do usuário autenticado.
+
+Para preencher um **banco local de demonstração vazio**, depois de `migrate` você pode executar `python manage.py loaddata catalogo_demo`. A fixture inclui livros, eletrônicos e categorias. Ela usa identificadores fixos e **pode sobrescrever registros com os mesmos IDs**; não a recarregue sobre dados que queira preservar. Também é possível cadastrar produtos pelo Admin, nas seções **Livros** e **Eletrônicos**.
 
 Para verificar a configuração sem iniciar o servidor, execute `python manage.py check`. Para encerrar o servidor, pressione `Ctrl+C`.
 
@@ -55,4 +57,4 @@ Para verificar a configuração sem iniciar o servidor, execute `python manage.p
 
 O projeto usa `DEBUG=True` e uma chave pública de desenvolvimento como valor padrão de `DJANGO_SECRET_KEY`. Essa configuração serve somente para execução local. Caso queira fornecer uma chave própria nesta sessão do PowerShell, execute `$env:DJANGO_SECRET_KEY = 'sua-chave-local'` antes de iniciar o servidor; no Linux/macOS, use `export DJANGO_SECRET_KEY='sua-chave-local'`. Não registre chaves reais no repositório.
 
-Os diretórios `templates/` e `static/` já estão configurados para as próximas etapas. O arquivo `db.sqlite3`, o ambiente `.venv` e arquivos gerados são ignorados pelo Git. Não há produtos, operações de carrinho nem telas definitivas nesta entrega da T01.
+Os diretórios `templates/` e `static/` estão configurados. O arquivo `db.sqlite3`, o ambiente `.venv` e arquivos gerados são ignorados pelo Git. Checkout, pedidos e pagamentos permanecem fora desta entrega.
