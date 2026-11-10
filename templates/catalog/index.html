@@ -48,6 +48,7 @@
                     </p>
                 </div>
                 <form class="filter-form" method="get" action="{% if categoria_selecionada %}{% url 'catalog:category' categoria_selecionada.pk %}{% else %}{% url 'catalog:index' %}{% endif %}">
+                    <input type="hidden" name="q" value="{{ termo_busca }}">
                     <label class="visually-hidden" for="min-price">Preço mínimo</label>
                     <input class="form-control" id="min-price" type="number" name="min_price" value="{{ min_preco|default:'' }}" min="0" step="0.01" placeholder="Mínimo R$">
                     <label class="visually-hidden" for="max-price">Preço máximo</label>
@@ -90,9 +91,9 @@
             {% if page_obj.paginator.num_pages > 1 %}
                 <nav class="mt-4" aria-label="Paginação do catálogo">
                     <ul class="pagination justify-content-center flex-wrap">
-                        {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ termo_busca|urlencode }}&min_price={{ min_preco|urlencode }}&max_price={{ max_preco|urlencode }}&fabricante={{ fabricante_selecionado }}">Anterior</a></li>{% endif %}
+                        {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if categoria_selecionada %}&categoria={{ categoria_selecionada.pk }}{% endif %}&q={{ termo_busca|urlencode }}&min_price={{ min_preco|urlencode }}&max_price={{ max_preco|urlencode }}&fabricante={{ fabricante_selecionado }}">Anterior</a></li>{% endif %}
                         <li class="page-item disabled"><span class="page-link">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span></li>
-                        {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ termo_busca|urlencode }}&min_price={{ min_preco|urlencode }}&max_price={{ max_preco|urlencode }}&fabricante={{ fabricante_selecionado }}">Próxima</a></li>{% endif %}
+                        {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if categoria_selecionada %}&categoria={{ categoria_selecionada.pk }}{% endif %}&q={{ termo_busca|urlencode }}&min_price={{ min_preco|urlencode }}&max_price={{ max_preco|urlencode }}&fabricante={{ fabricante_selecionado }}">Próxima</a></li>{% endif %}
                     </ul>
                 </nav>
             {% endif %}

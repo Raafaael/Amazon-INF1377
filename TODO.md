@@ -144,9 +144,11 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 - [x] Exigir autenticação nas operações de carrinho e garantir que ninguém consulte/edite itens de outro usuário.
 - [x] Utilizar operações POST e proteção CSRF para alterações; retornar mensagens claras de sucesso/erro.
 - [x] Criar testes para inclusão repetida, estoque insuficiente, quantidade inválida, remoção, total, carrinho vazio e isolamento entre usuários.
-- [ ] Combinar com Davi campos, ações e nomes de URLs usados pelo formulário e pela tela do carrinho.
+- [x] Combinar com Davi campos, ações e nomes de URLs usados pelo formulário e pela tela do carrinho.
 
 **Verificação em 08/11/2026:** os 25 testes de `cart` passaram e os templates usam as rotas reais. A auditoria de Pedro ainda pede avisar Davi sobre as edições feitas nos templates; não há evidência de que essa comunicação ocorreu.
+
+**Alinhamento informado em 09/11/2026:** Davi confirmou nesta sessão que já combinou os campos e as rotas com Pedro. O contrato real de integração está documentado em `cart/CONTRATO.md`.
 
 **Critério de conclusão:** com usuário autenticado, é possível adicionar um produto a partir do catálogo, visualizar o carrinho, alterar/remover itens e ver todos os valores atualizados corretamente.
 
@@ -173,6 +175,8 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 - [x] Validar que botões e links expostos realmente funcionam. **Não apresentar “Finalizar compra” como funcional nesta semana**; omitir ou sinalizar que ainda não está disponível.
 
 **Verificação em 08/11/2026:** a estrutura da Home está nos templates e CSS; a auditoria anterior da T05 foi parcial e antecede a integração funcional posterior do carrinho. Falta revalidar visualmente e concluir a auditoria da integração com Davi. Os itens marcados como feitos representam código presente, não nova aprovação humana da T05.
+
+**Atualização da T05 em 09/11/2026:** as rotas existentes do carrinho foram conferidas e o contrato foi documentado. Foram corrigidas a preservação da palavra pesquisada ao filtrar, a categoria da query ao paginar e a apresentação dos erros com Bootstrap; o login preserva o usuário após erro e o campo de quantidade informa a remoção com zero. Em ambiente temporário com Django 5.2.19, `manage.py check` passou e os 73 testes foram aprovados, incluindo três testes novos de integração dos formulários com CSRF real. A `.venv` de trabalho, que usa Django 6.1.3, foi preservada. A revisão visual foi interrompida pelo Computer Use por não conseguir determinar com segurança a URL atual do Chrome; responsividade, menu móvel e diálogos de confirmação ainda exigem observação no navegador. O relatório de Davi foi atualizado com os resultados, preservando as respostas humanas anteriores e sem atribuir aprovação à versão integrada.
 
 **Critério de conclusão:** as três telas pedidas (Home/Catálogo, Produto, Carrinho) são navegáveis e visualmente coerentes; o usuário consegue executar os fluxos ligados ao backend, sem interfaces extras fora do escopo.
 

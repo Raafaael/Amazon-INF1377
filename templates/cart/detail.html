@@ -33,7 +33,8 @@
                         <form class="col-6 col-md-2" method="post" action="{% url 'cart:update' item.pk %}" onsubmit="return Number(this.elements.quantidade.value) !== 0 || confirm('Remover &quot;{{ item.produto.nome|escapejs }}&quot; do carrinho?');">
                             {% csrf_token %}
                             <label class="form-label small mb-1" for="quantity-{{ item.pk }}">Quantidade</label>
-                            <input class="form-control" id="quantity-{{ item.pk }}" name="quantidade" type="number" min="0" max="{{ item.produto.estoque }}" step="1" value="{{ item.quantidade }}" required>
+                            <input class="form-control" id="quantity-{{ item.pk }}" name="quantidade" type="number" min="0" max="{{ item.produto.estoque }}" step="1" value="{{ item.quantidade }}" aria-label="Quantidade de {{ item.produto.nome }}" aria-describedby="quantity-help-{{ item.pk }}" required>
+                            <small class="text-secondary d-block mt-1" id="quantity-help-{{ item.pk }}">Zero remove o item.</small>
                             <button class="btn btn-sm btn-outline-primary w-100 mt-2" type="submit">Atualizar</button>
                         </form>
                         <div class="col-6 col-md-3 text-md-end">
