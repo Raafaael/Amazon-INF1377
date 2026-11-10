@@ -101,7 +101,7 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 
 ## T03 — Yuri · Catálogo público, navegação e filtros
 
-**Prioridade:** alta · **Estado:** [~] Em andamento · **Dependências:** T01, T02
+**Prioridade:** alta · **Estado:** [x] Concluído com ajuste de teste posterior à auditoria · **Dependências:** T01, T02
 
 **Referências:** UC02, UC03; SRS `RF-FLT-01` a `RF-FLT-08`, `RN-20`; busca e detalhe previstos no levantamento.
 
@@ -114,10 +114,12 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 - [x] Implementar filtro por **faixa de preço** e, para eletrônicos, por **fabricante**; permitir limpar filtros e combinar os critérios suportados.
 - [x] Validar preços dos filtros, tratar resultados vazios e paginar a listagem quando ultrapassar **50 produtos por página**.
 - [x] Expor às templates dados claros e consistentes, sem montar HTML dentro das views. Combinar com Davi os nomes de templates, parâmetros e URLs.
-- [ ] Testar listagem, detalhe, categoria vazia, filtros válidos/inválidos e paginação.
-- [ ] Registrar como **pendente de decisão** filtros do SRS que exigiriam informações não modeladas nesta etapa (ex.: avaliação média ou prazo estimado de entrega). Não inventar notas ou prazos falsos para fazer o filtro parecer funcional.
+- [x] Testar listagem, detalhe, categoria vazia, filtros válidos/inválidos e paginação.
+- [x] Registrar como **pendente de decisão** filtros do SRS que exigiriam informações não modeladas nesta etapa (ex.: avaliação média ou prazo estimado de entrega). Não inventar notas ou prazos falsos para fazer o filtro parecer funcional.
 
 **Verificação em 08/11/2026:** o teste `catalog.tests.test_views.CatalogoPublicoTests.test_categoria_e_detalhe_do_produto_respondem` falha porque espera “Informações do livro”, enquanto o template integrado exibe “Sobre o livro”. A funcionalidade de detalhe respondeu, mas o teste precisa ser alinhado ao texto atual ou o texto precisa ser revisto com Davi/Yuri. Os filtros de avaliação média e prazo seguem sem decisão documentada na T03.
+
+**Atualização técnica em 09/11/2026:** a expectativa do teste de detalhe foi alinhada ao título atual do template. A paginação já existia; os testes foram ampliados para verificar 50 produtos na primeira página, o restante na segunda, preservação de categoria/busca/faixa de preço, páginas inválidas ou acima do limite, categoria vazia e combinação de fabricante com preço. Filtros por avaliação média e prazo estimado de entrega permanecem **pendentes de decisão do grupo**, pois não há dados modelados para aplicá-los. Este ajuste posterior à auditoria de Yuri ainda não recebeu nova avaliação humana.
 
 **Critério de conclusão:** a Home exibe produtos reais do banco; usuário navega até o detalhe, busca e filtra produtos e recebe mensagens adequadas se não houver resultado.
 
@@ -180,18 +182,22 @@ Construir **a primeira versão executável e navegável** do site inspirado em u
 
 ## 3. Verificação integrada da entrega (após T01–T05)
 
-- [ ] Em ambiente limpo, seguir o **README** para instalar, migrar e executar localmente.
-- [ ] Acessar Home sem erro e visualizar pelo menos um livro e um eletrônico cadastrados pelo Django Admin.
-- [ ] Navegar por categoria, abrir detalhe de um produto, buscar e aplicar filtros básicos.
-- [ ] Fazer login como cliente de demonstração e adicionar produto ao carrinho.
-- [ ] Verificar subtotal e total; adicionar o mesmo produto novamente; alterar quantidade; remover.
-- [ ] Verificar estados de carrinho vazio, quantidade inválida e falta de estoque.
-- [ ] Conferir que usuário A não acessa o carrinho de usuário B e que apenas administrador cadastra produtos.
-- [ ] Executar `python manage.py check` e `python manage.py test`; registrar eventuais falhas ainda existentes.
+- [x] Em ambiente limpo, seguir o **README** para instalar, migrar e executar localmente.
+- [x] Acessar Home sem erro e visualizar pelo menos um livro e um eletrônico cadastrados pelo Django Admin.
+- [x] Navegar por categoria, abrir detalhe de um produto, buscar e aplicar filtros básicos.
+- [x] Fazer login como cliente de demonstração e adicionar produto ao carrinho.
+- [x] Verificar subtotal e total; adicionar o mesmo produto novamente; alterar quantidade; remover.
+- [x] Verificar estados de carrinho vazio, quantidade inválida e falta de estoque.
+- [x] Conferir que usuário A não acessa o carrinho de usuário B e que apenas administrador cadastra produtos.
+- [x] Executar `python manage.py check` e `python manage.py test`; registrar eventuais falhas ainda existentes.
 - [ ] Confirmar que não existem links funcionais enganosos para checkout ou outras funcionalidades ainda não implementadas.
 - [x] Atualizar README caso a forma real de execução tenha mudado.
 
 **Verificação técnica em 08/11/2026:** `manage.py check` passou; `makemigrations --check --dry-run` não detectou mudanças; `migrate` aplicou `catalog.0001_initial` e `cart.0001_initial` ao SQLite local; 31 testes de models/Admin do catálogo e 25 testes do carrinho passaram. A suíte completa executou 66 testes com 1 falha de expectativa textual no detalhe do livro (“Informações do livro” no teste × “Sobre o livro” no template). O banco local contém 0 produtos; a fixture de demonstração foi validada por testes, mas não carregada nele para evitar sobrescrever dados por PK. Portanto, os fluxos integrados com produtos reais no banco local e a conferência visual final permanecem pendentes.
+
+**Atualização técnica em 09/11/2026:** `python manage.py check` passou sem avisos e `python manage.py test` aprovou os 70 testes. As migrações de `catalog` e `cart` estão aplicadas. Antes da carga, todas as tabelas do catálogo local estavam vazias; `python manage.py loaddata catalogo_demo` carregou 27 objetos, incluindo 3 livros e 3 eletrônicos. Requisições ao `runserver` local para Home, categoria, detalhe e busca retornaram HTTP 200; `/admin/` redirecionou ao login e a página de login respondeu HTTP 200. Os itens que exigem observação no navegador, cadastro manual pelo Admin e avaliação humana seguem pendentes.
+
+**Avaliação manual relatada por Breno em 09/11/2026:** realizou os passos 1 a 9 do roteiro de verificação integrada (ambiente limpo, cadastro e consulta de produtos, catálogo e filtros, login, operações e estados do carrinho, isolamento entre usuários e permissão administrativa) e informou que todos funcionaram. Essa informação é relato do integrante; a revisão visual e dos links do passo 10 permanece atribuída a Davi e ainda não foi confirmada nesta avaliação.
 
 **Observação:** esta é uma conferência do **resultado integrado**, não uma sexta tarefa atribuída permanentemente a um integrante. Cada responsável deve testar sua entrega; a integração deve ser combinada pelo grupo.
 
