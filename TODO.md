@@ -1,224 +1,248 @@
-# TODO.md — Entrega semanal: Catálogo e Carrinho
+# TODO.md — Semana 2 | Checkout, pedidos, pagamentos e entrega
 
-> **Projeto:** Amazon (e-commerce acadêmico)  
-> **Planejamento inicial:** 07/11/2026  
-> **Prazo do professor:** a preencher pelo grupo  
-> **Situação inicial:** repositório recém-criado, sem aplicação implementada.  
-> **Documentação de referência:** `AGENTS.md`, `context.md` (ou `context_revisado.md`, até ser renomeado), SRS v1.1 e casos de uso UC01–UC05/UC11.
+> **Projeto:** Amazon — e-commerce acadêmico em Django  
+> **Entrega:** Semana 2 — finalizar compra e acompanhar pedido  
+> **Integrantes:** Breno, Rafael, Yuri, Pedro e Davi  
+> **Período e prazo do professor:** a preencher pelo grupo  
+> **Situação inicial desta semana:** a Semana 1 já forneceu catálogo, produtos, autenticação básica e carrinho; verificar o código integrado antes de editar.  
+> **Documentos de referência:** `AGENTS.md`, `context.md`, SRS v1.1, diagramas e casos de uso pertinentes.  
+> **Histórico:** o planejamento original, com os registros da Semana 1, está preservado separadamente em `TODO_semana_1_arquivado.md` (se esse arquivo for adicionado ao repositório).
 
-## 1. Objetivo desta entrega
+## 1. Objetivo da Semana 2
 
-Construir **a primeira versão executável e navegável** do site inspirado em um e-commerce, limitada a:
+Completar um **fluxo acadêmico de compra demonstrável**, a partir do carrinho implementado na Semana 1:
 
-1. **Página inicial/catálogo:** listar livros e eletrônicos, navegar por categorias, pesquisar e aplicar filtros essenciais.
-2. **Página de produto:** consultar dados do item e escolher quantidade para adicionar ao carrinho.
-3. **Carrinho:** adicionar, consultar, alterar quantidade e remover produtos, exibindo subtotais e total.
-4. **Cadastro administrativo básico de produtos:** suficiente para alimentar e demonstrar o catálogo.
-5. **Inicialização local do projeto:** instalação reproduzível e execução por qualquer integrante.
+1. Cadastrar e selecionar **endereços**, com preenchimento por **ViaCEP**.
+2. Escolher modalidade de **frete** e mostrar valor/prazo simulados.
+3. Finalizar a compra com **cartão fictício ou PIX simulado**, incluindo **QR Code de demonstração**.
+4. Criar e consultar **pedidos**, preservando itens, preços, totais e status.
+5. Simular o **andamento da entrega**, com histórico compreensível para o usuário.
 
-**Não implementar nesta semana:** checkout/finalização de compra, pedidos, pagamentos, PIX, endereços/CEP, frete, entrega, avaliações completas, listas de desejos, painel administrativo personalizado ou telas adicionais. Essas funções pertencem ao escopo geral, mas **não** à tarefa semanal atual.
+**Escopo da demonstração:** catálogo → carrinho → checkout → endereço/frete → pagamento simulado → pedido → acompanhamento. A compra deve ser fictícia, sem cobrança ou entrega real. A simulação pode usar valores fixos, booleanos e aleatoriedade controlada, desde que o resultado seja persistido e permaneça coerente.
 
-### Arquitetura desta semana
+**Não fazer nesta semana:** gateway bancário real, PIX cobravel, APIs de transportadoras, cálculo profissional de frete, cadastro completo de clientes, marketplace, cupons, devoluções/reembolsos reais, notificações externas, filas, microsserviços ou telas que não ajudem a demonstrar essa entrega. Não implementar sistemas complexos de anti-fraude ou estoque reservado.
 
-- **Python + Django** como base prática para iniciar a implementação.
-- **Django Templates + HTML/CSS/JavaScript e Bootstrap** para a interface; sem React.
-- **Django ORM** para os models e consultas; banco relacional.
-- **Banco:** MySQL é uma **proposta** registrada no contexto, ainda não confirmação definitiva. Para o primeiro `runserver`, é aceitável usar o **SQLite padrão do Django de forma provisória**, caso MySQL ainda não esteja configurado; documentar isso no README e alinhar antes de estabelecer o banco final. Não instalar MySQL nem dependências de conexão sem a decisão do grupo.
-- **Execução local com `.venv` e `requirements.txt`**, sem Docker, serviços de nuvem ou arquitetura de microsserviços.
-- **Autenticação nativa do Django:** catálogo consultável; ações pessoais do carrinho exigem login. Nesta entrega basta uma tela de login simples e usuários criados para demonstração; não desenvolver um módulo completo de cadastro/perfil.
+### Tecnologias e limites
 
-## 2. Integrantes e ordem de trabalho
+- Continuar **Python + Django + ORM + Django Templates + Bootstrap + JavaScript simples**, aproveitando o repositório da Semana 1. **Sem Docker** ou frontend separado.
+- Preservar o banco de dados e as convenções realmente existentes; não trocar SQLite por MySQL por iniciativa própria. MySQL continua uma proposta para decisão do grupo.
+- Reaproveitar a autenticação nativa do Django. Cliente acessa apenas seus próprios endereços, pagamentos e pedidos; alterações administrativas exigem autorização no backend.
+- Valores monetários devem usar `Decimal`; formulários de alteração devem usar POST e CSRF. Validar dados no servidor mesmo quando houver máscara/JavaScript.
+- **Simulações explícitas:** indicar na interface quando pagamento, prazo ou movimentação são fictícios. Não gerar QR Code que possa efetuar uma cobrança real. Não armazenar CVV ou número completo de cartão real; utilizar dados fictícios e guardar, quando necessário, somente informações mascaradas.
+- A consulta **ViaCEP** é a integração HTTP externa simples prevista. Tratar CEP desconhecido, falha de rede e campos não retornados. Para demonstrações, utilizar dados pessoais fictícios.
+- Requisitos gerais de segurança do `context.md` (inclusive o tema de proteção de dados em repouso e HTTPS ao transmitir dados pessoais) continuam válidos e exigem uma decisão técnica do grupo; não afirmar que estão atendidos automaticamente pelo Django ou pelo uso de dados fictícios.
 
-| ID | Responsável | Tarefa desta semana | Dependência principal |
+## 2. Divisão das tarefas — todos podem começar em paralelo
+
+| ID | Responsável | Entrega principal | Demonstração própria da tarefa |
 |---|---|---|---|
-| **T01** | **Breno** | Inicialização do Django, estrutura mínima e instruções de execução | Nenhuma; **primeiro** |
-| **T02** | **Rafael** | Models e cadastro administrativo de produtos/categorias | T01 |
-| **T03** | **Yuri** | Navegação, listagem, detalhes, busca e filtros do catálogo | T01 e modelos de T02 |
-| **T04** | **Pedro** | Models, regras e operações do carrinho | T01 e contrato de `Produto` de T02 |
-| **T05** | **Davi** | Interface visual das telas de catálogo, produto, carrinho e login | T01; alinhar URLs/dados com T03/T04 |
+| **T06** | **Breno** | Pedidos, itens, valores e histórico de status | Lista **Meus pedidos** e página de detalhes |
+| **T07** | **Rafael** | Endereços, endereço padrão e ViaCEP | Página **Meus endereços** com cadastro/edição |
+| **T08** | **Yuri** | Simulação de frete, prazo e andamento de entrega | **Simulador de frete** e linha do tempo de entrega |
+| **T09** | **Pedro** | Pagamento simulado por cartão e PIX | Formulário com **máscaras** e **QR Code de PIX fictício** |
+| **T10** | **Davi** | Checkout e composição das páginas de finalização | **Checkout em etapas** e confirmação do pedido |
 
-**Ordem recomendada:** Breno prepara uma base funcional; Rafael define os models e seus nomes; Yuri e Pedro podem desenvolver em paralelo após conhecerem esse contrato; Davi pode preparar o layout-base desde cedo e conectar os templates quando views/URLs estiverem definidas. **A ordem não é uma divisão permanente do projeto**, apenas desta entrega.
+**Regra de trabalho:** as cinco tarefas podem começar sobre a base integrada da Semana 1. Cada integrante implementa a lógica **e a interface simples de seu módulo**, sem deixar todas as telas para Davi. Davi fica com a composição do checkout e o estilo compartilhado, não com a responsabilidade de construir todas as interfaces dos outros.
 
-### Contratos de integração (alinhar antes de editar)
+**Dependências de integração, não de início:** inicialmente, cada integrante testa seu módulo com objetos/valores de demonstração e um contrato combinado. Assim que os módulos reais estiverem disponíveis, a interface passa a utilizá-los; não manter dados simulados como se fossem pedidos ou pagamentos efetivos. Não exigir que todos terminem para começar a própria tarefa. As integrações cruzadas são revisadas pelo grupo ao final da semana.
 
-- Apps propostas: `catalog` (produtos/categorias) e `cart` (carrinho). Projeto Django: `config`. Usar os nomes efetivamente criados por Breno.
-- Model de referência: `catalog.Produto`; informações especializadas podem ficar em `Livro` e `Eletronico`, conforme a modelagem que Rafael definir.
-- O carrinho deve referenciar o **usuário autenticado do Django**, sem criar um segundo sistema de login nesta etapa.
-- Convenção sugerida de rotas e nomes, a confirmar no código: `/` (`catalog:index`), `/produto/<id>/` (`catalog:product_detail`), `/carrinho/` (`cart:detail`) e rotas **POST** para adicionar, atualizar e remover itens.
-- **Propriedade dos arquivos:** Rafael edita prioritariamente `catalog/models.py`, `catalog/admin.py` e migrações; Yuri, `catalog/views.py`/`catalog/urls.py`; Pedro, arquivos do app `cart`; Davi, `templates/` e `static/`; Breno, `config/`, `manage.py`, `requirements.txt`, `.gitignore` e `README.md`. Mudanças fora dessa responsabilidade devem ser coordenadas para evitar sobrescrever trabalho alheio.
-- Não usar funções ou nomes de rotas inexistentes silenciosamente: primeiro conferir os arquivos implementados e alinhar os contratos.
+### 2.1. Contratos mínimos para evitar retrabalho
+
+Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem funções já existentes. Antes de codificar, conferir o repositório e manter nomes compatíveis com o que estiver sendo implementado.
+
+| Responsável | Entrada principal | Saída/contrato para a integração |
+|---|---|---|
+| **Breno** | Usuário, itens do carrinho, endereço de entrega quando necessário, frete e modalidade | `Pedido` com ID, itens/preços congelados, total e status; serviço de criação e consulta de pedidos |
+| **Rafael** | Usuário e dados/CEP do endereço | Endereços válidos do usuário; identificador de endereço selecionável e dados para exibição |
+| **Yuri** | CEP, tipo de entrega e, para acompanhamento, pedido/status atual | Cotação com `valor`, `prazo_dias`, `tipo`; transições simuladas de status e informações de acompanhamento |
+| **Pedro** | Referência do pedido, valor e modalidade cartão/PIX | Resultado com status `PENDENTE`, `APROVADO` ou `RECUSADO`; dados fictícios de confirmação/QR |
+| **Davi** | Dados fornecidos pelos quatro módulos | Formulários e navegação que orquestram o fluxo sem duplicar as regras de negócio |
+
+**Acordos simples de integração:**
+
+1. Reutilizar `catalog.Produto` e o carrinho da Semana 1; **não duplicar** usuário, produto, carrinho ou autenticação.
+2. Os apps sugeridos são `orders` (Breno), `addresses` (Rafael), `shipping` (Yuri) e `payments` (Pedro). O checkout pode ser implementado em `checkout` (Davi) ou por views próprias, conforme o padrão existente; **cada um confirma nomes e rotas no código real**. Não criar um app por tabela sem necessidade.
+3. Evitar imports obrigatórios de um app ainda inexistente no início da tarefa. Testes e protótipos podem usar doubles/mocks locais; a integração deve substituir essas dependências antes da demonstração.
+4. Um pedido guarda o **preço unitário do momento da compra**, os valores de frete/total e, quando necessário, os dados do endereço utilizados na compra. Mudanças posteriores no produto ou endereço não devem reescrever o pedido histórico.
+5. **Uma única fonte para status/histórico do pedido:** Breno define o modelo/serviço de atualização; Yuri utiliza esse contrato para simular a entrega, evitando criar uma tabela paralela `Entrega` somente para rastreamento. O modelo relacional de referência usa `HistoricoStatusPedido`.
+6. O pagamento só altera o pedido para pago quando a simulação informar **aprovação**. Uma recusa não pode aparecer como compra aprovada; PIX pendente continua pendente até simular confirmação.
+7. O checkout deve utilizar serviços de pedidos, endereço, frete e pagamento em vez de reproduzir suas validações. Cada integrante conserva suas páginas próprias de demonstração.
+8. Arquivos compartilhados (`config/urls.py`, `config/settings.py`, `requirements.txt`, `templates/base.html`, CSS global e migrations de apps de terceiros) exigem cuidado: acrescentar apenas o necessário, preservar mudanças existentes e coordenar integrações. Cada responsável edita principalmente seu app/templates próprios.
+9. Simulações aleatórias podem acontecer **na ação de gerar uma cotação/resultado**, não a cada carregamento de página. Persistir o resultado escolhido. Para testes e demonstração, permitir cenários **determinísticos** (ex.: forçar aprovação/recusa), sem depender do sorteio.
+10. A opção de **livro digital/e-book** está citada nas regras do SRS, mas o modelo existente pode não distinguir físico de digital. Verificar o que foi realmente modelado; não presumir que todo livro é digital. Se ainda não houver indicador, registrar essa decisão para integração e não exigir endereço/frete em pedido comprovadamente exclusivamente digital.
 
 ---
 
-## T01 — Breno · Inicializar o projeto Django
+## T06 — Breno · Pedidos e consulta do histórico de compras
 
-**Prioridade:** bloqueante · **Estado:** [x] Concluído
+**Estado:** [ ] Não iniciado  
+**Prioridade:** alta  
+**Base já disponível:** modelos de produtos, carrinho e autenticação da Semana 1  
+**Referências:** UC07 (detalhes), UC10 (consultar pedidos), regras de pedidos no `context.md`, modelo relacional (`Pedido`, `ItemPedido`, `StatusPedido`, `HistoricoStatusPedido`).
 
-**Objetivo:** partindo de um repositório vazio, deixar o Django **instalável, iniciável e acessível no navegador**, sem adiantar a lógica de catálogo/carrinho.
+**Objetivo:** permitir que uma compra simulada seja registrada de forma consistente e consultada pelo próprio usuário, com uma interface de histórico simples e útil.
 
 **Checklist**
 
-- [x] Criar e testar ambiente virtual local `.venv` e arquivo `requirements.txt` com dependências realmente usadas.
-- [x] Inicializar o projeto Django (`manage.py`, `config/settings.py`, `config/urls.py` etc.).
-- [x] Criar a estrutura mínima dos apps `catalog` e `cart`, registrá-los em `INSTALLED_APPS` e deixar URLs iniciais válidas, mesmo que ainda sejam placeholders.
-- [x] Disponibilizar a rota `/` com uma página provisória simples (ex.: “Projeto Amazon em desenvolvimento”), sem tentar implementar o catálogo.
-- [x] Manter `templates/` e `static/` configurados para o Davi trabalhar depois; evitar criar o layout definitivo.
-- [x] Habilitar o Django Admin e o mecanismo de autenticação padrão; deixar rota de login disponível para a interface posterior.
-- [x] Configurar `.gitignore` para `.venv/`, `__pycache__/`, `.env`, banco local de desenvolvimento e outros arquivos gerados; nunca incluir segredos.
-- [x] Atualizar `README.md` com requisitos, criação/ativação de `.venv` no Windows e Linux/macOS, instalação, `migrate`, criação de usuário administrador e `runserver`.
-- [x] Executar `python manage.py check`, `python manage.py migrate` e iniciar `python manage.py runserver` para confirmar que a página inicial responde.
-- [x] Registrar no README qual banco está efetivamente configurado e quais escolhas continuam provisórias.
+- [ ] Criar o app/módulo de pedidos e os models necessários de **`Pedido`**, **`ItemPedido`** e histórico de status, aproveitando a nomenclatura do modelo relacional quando adequado.
+- [ ] Registrar cliente, data, estado, itens, quantidades, preço unitário registrado na compra, subtotal de itens, frete e total; informações de entrega são opcionais quando não se aplicam.
+- [ ] Criar serviço simples para gerar um pedido a partir dos itens do carrinho, validando carrinho não vazio, quantidades e disponibilidade, sem duplicar o pedido em uma submissão repetida do mesmo checkout.
+- [ ] Preservar os preços do pedido mesmo quando o preço do `Produto` mudar depois; calcular valores com `Decimal`.
+- [ ] Disponibilizar atualização de status por um serviço controlado e registro de **histórico** (data, novo estado e observação quando aplicável); restringir transições incoerentes.
+- [ ] Criar a página **Meus pedidos** (mais recentes primeiro) com identificador, data, valor e situação, e a página **Detalhes do pedido** com itens, totais, tipo/endereço de entrega quando aplicáveis e histórico.
+- [ ] Garantir que um cliente não veja o pedido de outro. Não permitir alteração arbitrária de status por clientes.
+- [ ] Criar dados/testes de demonstração para consultar pedidos sem depender da implementação pronta do checkout, do pagamento ou do frete.
+- [ ] Documentar para Pedro e Yuri como consultar o pedido e atualizar o status; documentar para Davi como criar o pedido no fluxo de checkout.
 
-**Critério de conclusão:** outro integrante consegue seguir o README, executar a aplicação localmente e abrir `/` e `/admin/` **antes** de haver produtos ou carrinho implementados.
+**Critério de conclusão:** é possível criar um pedido de demonstração consistente, consultar uma listagem e detalhes próprios e observar seu histórico; modelos e serviços ficam preparados para a finalização real da Semana 2.
 
-**Não fazer:** models completos de produtos, views de catálogo, carrinho funcional, telas definitivas ou módulos futuros.
+**Limite:** não implementar simulador de cartão/PIX, ViaCEP, cálculo de frete ou telas de checkout. Não inventar uma logística profissional nem implementar devoluções e reembolsos nesta semana.
 
 ---
 
-## T02 — Rafael · Modelos e cadastro de produtos
+## T07 — Rafael · Endereços, endereço padrão e ViaCEP
 
-**Prioridade:** alta · **Estado:** [x] Concluído · **Dependência:** T01
+**Estado:** [ ] Não iniciado  
+**Prioridade:** alta  
+**Base já disponível:** usuário autenticado Django  
+**Referências:** UC06, RN-09 a RN-11 e requisitos de privacidade/endereço do `context.md`.
 
-**Referência:** UC01, SRS `RF-CAT-01` a `RF-CAT-09` e regras `RN-01` a `RN-05`.
+**Objetivo:** permitir que cada usuário cadastre e selecione endereços de entrega, com consulta de CEP e uma interface própria que possa ser reutilizada no checkout.
 
 **Checklist**
 
-- [x] Implementar models mínimos para **Categoria**, **Produto** e especializações **Livro** e **Eletronico**, com relacionamentos coerentes com o modelo de domínio/relacional.
-- [x] Contemplar os atributos exigidos: produto (nome, descrição, preço, estoque, categoria e tipo); livro (ISBN, páginas, idioma, autor, editora); eletrônico (modelo, garantia, fabricante).
-- [x] Criar somente entidades de apoio necessárias ao cadastro (ex.: Autor, Editora, Fabricante e representação simples de Idioma), documentando decisões de modelagem relevantes.
-- [x] Permitir categoria pai/subcategoria sem introduzir estrutura complexa desnecessária.
-- [x] Registrar os models no **Django Admin** para cadastrar categorias e produtos de demonstração; usar o Admin como interface administrativa inicial, sem criar tela extra.
-- [x] Validar obrigatoriedade de campos, estoque não negativo e preço **maior que R$ 0,00 e menor que R$ 10.000,00**, conforme o SRS v1.1. Registrar a divergência do fluxo A5 do UC01, sem liberar preços fora desse limite.
-- [x] Gerar e testar migrações; confirmar que é possível cadastrar pelo menos **um Livro e um Eletrônico** vinculados a categorias.
-- [x] Criar testes básicos de validação dos produtos e das relações essenciais.
-- [x] Informar a Yuri e Pedro o contrato real dos models, os campos de preço/estoque e o caminho para consultar os produtos.
+- [ ] Criar o model **`Endereco`** associado ao usuário, com CEP, logradouro, número, complemento opcional, bairro, cidade, estado, tipo e indicador de endereço padrão (ou outra representação simples equivalente).
+- [ ] Implementar cadastro, listagem, edição e seleção de endereço padrão, com exclusividade: **no máximo um padrão por usuário**.
+- [ ] Utilizar **ViaCEP** para preencher automaticamente os campos disponíveis depois da consulta de um CEP válido. Permitir que o usuário complete os campos não retornados.
+- [ ] Tratar CEP com formato inválido, CEP inexistente, resposta incompleta e falha/indisponibilidade do serviço, com mensagens claras.
+- [ ] Criar a página **Meus endereços** com cartões/listagem e formulário organizado, incluindo máscara simples `00000-000` para o CEP. A máscara não substitui validação no servidor.
+- [ ] Validar o número obrigatório e o complemento opcional; impedir consulta, alteração ou exclusão de endereços pertencentes a outro usuário.
+- [ ] Disponibilizar para o checkout a listagem dos endereços do usuário e a escolha de um endereço existente; preparar ligação simples para criar um novo endereço quando necessário.
+- [ ] Criar testes com respostas ViaCEP simuladas para não depender da internet; verificar endereço padrão e isolamento entre usuários.
+- [ ] Documentar a estrutura do endereço utilizada pelo pedido e pelo checkout, sem exigir que esses módulos estejam prontos para testar o cadastro.
 
-**Critério de conclusão:** produtos de ambos os tipos podem ser cadastrados/consultados pelo Django Admin, são persistidos corretamente e respeitam as regras básicas. Há dados suficientes para demonstrar a interface.
+**Critério de conclusão:** o usuário cadastra um endereço com preenchimento por CEP, edita seus dados, define um padrão e consegue selecioná-lo por uma interface própria; falhas da consulta externa são tratadas adequadamente.
 
-**Não fazer:** inventário de vendedores, avaliações completas, telas públicas, checkout nem duplicação de models que outro integrante já criou.
+**Limite:** não criar cadastro completo de usuários, cálculo de frete nem checkout. Não solicitar dados pessoais reais para a demonstração.
 
 ---
 
-## T03 — Yuri · Catálogo público, navegação e filtros
+## T08 — Yuri · Frete fictício e acompanhamento de entrega
 
-**Prioridade:** alta · **Estado:** [x] Concluído com ajuste de teste posterior à auditoria · **Dependências:** T01, T02
+**Estado:** [ ] Não iniciado  
+**Prioridade:** alta  
+**Base já disponível:** CEP e modalidades do domínio; pedido pode ser representado por dados fictícios nos testes iniciais  
+**Referências:** tipos de entrega `PADRAO`, `EXPRESSA`, `AGENDADA`; estados e histórico de pedido; simulação de transporte prevista no `context.md`.
 
-**Referências:** UC02, UC03; SRS `RF-FLT-01` a `RF-FLT-08`, `RN-20`; busca e detalhe previstos no levantamento.
+**Objetivo:** oferecer uma escolha de frete interessante para a demonstração e um acompanhamento visual da evolução de uma entrega, **sem transportadora real**.
 
 **Checklist**
 
-- [x] Implementar a view/URL da **Home (`/`)** para exibir os produtos cadastrados por Rafael (substituindo o placeholder de Breno).
-- [x] Implementar **navegação por categorias e subcategorias**; permitir clicar na categoria e visualizar seus produtos.
-- [x] Implementar página de **detalhes do produto**, com nome, descrição, preço, disponibilidade, tipo e dados específicos do Livro/Eletrônico.
-- [x] Implementar **busca simples por palavra-chave**, ao menos pelo nome do produto, para a barra de pesquisa da Home funcionar.
-- [x] Implementar filtro por **faixa de preço** e, para eletrônicos, por **fabricante**; permitir limpar filtros e combinar os critérios suportados.
-- [x] Validar preços dos filtros, tratar resultados vazios e paginar a listagem quando ultrapassar **50 produtos por página**.
-- [x] Expor às templates dados claros e consistentes, sem montar HTML dentro das views. Combinar com Davi os nomes de templates, parâmetros e URLs.
-- [x] Testar listagem, detalhe, categoria vazia, filtros válidos/inválidos e paginação.
-- [x] Registrar como **pendente de decisão** filtros do SRS que exigiriam informações não modeladas nesta etapa (ex.: avaliação média ou prazo estimado de entrega). Não inventar notas ou prazos falsos para fazer o filtro parecer funcional.
+- [ ] Implementar um serviço de cotação fictícia que receba o CEP (quando aplicável) e a modalidade e devolva **valor em reais e prazo estimado em dias**.
+- [ ] Oferecer modalidades **Padrão**, **Expressa** e **Agendada**; para a agendada, permitir selecionar/mostrar uma data futura de entrega simulada, sem criar agendamento externo.
+- [ ] Usar uma lógica simples e explicável para cotação (tabela fixa por modalidade ou aleatoriedade controlada); evitar retornar valores diferentes ao apenas recarregar a página.
+- [ ] Criar um pequeno **simulador de frete** com CEP, opções de entrega e comparação dos valores/prazos, utilizando Bootstrap e templates do Django.
+- [ ] Implementar a evolução fictícia do pedido após pagamento aprovado, por exemplo **EM_PREPARACAO → ENVIADO → ENTREGUE**, com datas coerentes e sem saltos incoerentes ou entrega anterior ao envio.
+- [ ] Criar uma **linha do tempo de acompanhamento** com status atual, eventos e previsão; disponibilizar avanço de estado por botão de simulação com permissão administrativa ou por mecanismo demonstrativo protegido, nunca por alteração livre de qualquer cliente.
+- [ ] Integrar o registro de status pelo contrato definido por Breno quando estiver disponível. Até lá, testar com pedidos fictícios/mocks, sem manter uma implementação paralela de `HistoricoStatusPedido` ou criar tabela `Entrega` desnecessária.
+- [ ] Registrar os valores/prazos escolhidos no pedido durante a integração e não sortear novamente depois da confirmação.
+- [ ] Criar testes de cotação, modalidade, cronologia, autorização e transições válidas, com resultados determinísticos.
 
-**Verificação em 08/11/2026:** o teste `catalog.tests.test_views.CatalogoPublicoTests.test_categoria_e_detalhe_do_produto_respondem` falha porque espera “Informações do livro”, enquanto o template integrado exibe “Sobre o livro”. A funcionalidade de detalhe respondeu, mas o teste precisa ser alinhado ao texto atual ou o texto precisa ser revisto com Davi/Yuri. Os filtros de avaliação média e prazo seguem sem decisão documentada na T03.
+**Critério de conclusão:** o usuário consegue visualizar e comparar modalidades de frete, e um pedido de demonstração pode avançar por estados simulados com uma linha do tempo consistente.
 
-**Atualização técnica em 09/11/2026:** a expectativa do teste de detalhe foi alinhada ao título atual do template. A paginação já existia; os testes foram ampliados para verificar 50 produtos na primeira página, o restante na segunda, preservação de categoria/busca/faixa de preço, páginas inválidas ou acima do limite, categoria vazia e combinação de fabricante com preço. Filtros por avaliação média e prazo estimado de entrega permanecem **pendentes de decisão do grupo**, pois não há dados modelados para aplicá-los. Este ajuste posterior à auditoria de Yuri ainda não recebeu nova avaliação humana.
-
-**Critério de conclusão:** a Home exibe produtos reais do banco; usuário navega até o detalhe, busca e filtra produtos e recebe mensagens adequadas se não houver resultado.
-
-**Não fazer:** editar models de Rafael sem alinhamento, implementar avaliações, inventar cálculo de entrega ou montar layout visual elaborado.
+**Limite:** não integrar Correios/transportadoras, mapas, rastreio real, cálculo de peso/dimensão ou APIs de previsão de chegada. Não criar uma entidade de entrega adicional sem necessidade do modelo existente.
 
 ---
 
-## T04 — Pedro · Funcionalidade do carrinho
+## T09 — Pedro · Pagamento simulado com cartão e PIX (QR Code)
 
-**Prioridade:** alta · **Estado:** [x] Concluído com pendência documentada · **Dependências:** T01 e modelo `Produto` de T02
+**Estado:** [ ] Não iniciado  
+**Prioridade:** alta  
+**Base já disponível:** usuário autenticado, valor fictício da compra; pedido pode ser mock nos testes iniciais  
+**Referências:** UC09, regras de pagamentos simulados e `Pagamento`, `PagamentoCartao`, `PagamentoPix` do `context.md`.
 
-**Referências:** UC04 (consultar), UC05 (remover), UC11 (adicionar); SRS `RF-CAR-01` a `RF-CAR-09` e `RN-06` a `RN-08`.
+**Objetivo:** simular as duas modalidades de pagamento de maneira convincente e segura para uma demonstração acadêmica, com interface própria e sem transação financeira real.
 
 **Checklist**
 
-- [x] Criar models **Carrinho** e **ItemCarrinho**, associados ao usuário autenticado e ao `Produto`, com migrações.
-- [x] Implementar a consulta do carrinho do usuário, incluindo **carrinho vazio**.
-- [x] Implementar **adicionar produto**, exigindo quantidade inteira positiva e disponível em estoque.
-- [x] Se o produto já estiver no carrinho, **somar quantidades**, verificando o estoque considerando a quantidade total.
-- [x] Implementar **alteração de quantidade** e **remoção completa do item**, com confirmação na interface antes de remover (coordenar com Davi).
-- [x] Calcular `subtotal = preço unitário × quantidade` e `total = soma dos subtotais`; ao esvaziar, total deve ser zero.
-- [x] Exigir autenticação nas operações de carrinho e garantir que ninguém consulte/edite itens de outro usuário.
-- [x] Utilizar operações POST e proteção CSRF para alterações; retornar mensagens claras de sucesso/erro.
-- [x] Criar testes para inclusão repetida, estoque insuficiente, quantidade inválida, remoção, total, carrinho vazio e isolamento entre usuários.
-- [x] Combinar com Davi campos, ações e nomes de URLs usados pelo formulário e pela tela do carrinho.
+- [ ] Criar lógica/modelos mínimos para registrar **modalidade, valor, status, referência do pedido e resultado simulado**, sem duplicar o total da compra de forma inconsistente.
+- [ ] Implementar pagamento por **cartão fictício**, com formulário de número de demonstração, nome, validade e CVV apenas para validação transitória; incluir **máscaras de entrada** para número e validade e indicação clara de ambiente de simulação.
+- [ ] Validar o formato dos dados no servidor. **Nunca salvar CVV, número completo de cartão real ou credenciais bancárias**; guardar, se necessário, somente bandeira fictícia e últimos quatro dígitos para exibição.
+- [ ] Simular cartão **aprovado ou recusado**, usando booleano/aleatoriedade controlada ou opção de cenário de teste, com mensagem explicando o resultado.
+- [ ] Implementar **PIX fictício** com identificador/código de demonstração e **QR Code gerado localmente** (por exemplo, com dependência Python pequena como `qrcode`, se necessária). O conteúdo do QR deve ser uma referência **não pagável**, rotulada como `PIX SIMULADO`, e não uma cobrança PIX real.
+- [ ] Disponibilizar ações de **Simular pagamento PIX** e, se pertinente, de cancelamento/expiração simulada, atualizando o status apenas por ação explícita.
+- [ ] Criar uma página/componente próprio para demonstrar **Cartão** e **PIX**, com feedback de pagamento aprovado, recusado ou pendente; oferecer partial/form reutilizável no checkout de Davi.
+- [ ] Respeitar a regra: somente pagamento aprovado permite marcar pedido como pago; valor registrado deve coincidir com o do pedido; não aprovar recusa nem confirmar PIX automaticamente ao mostrar o QR.
+- [ ] Criar testes para aprovação, recusa, PIX pendente e confirmado, valores e dados inválidos, permissões e persistência do resultado; testes reproduzíveis sem depender de sorteio.
+- [ ] Documentar para Breno e Davi a chamada de processamento e os possíveis resultados, sem exigir que o checkout ou o model final do pedido estejam concluídos para iniciar.
 
-**Verificação em 08/11/2026:** os 25 testes de `cart` passaram e os templates usam as rotas reais. A auditoria de Pedro ainda pede avisar Davi sobre as edições feitas nos templates; não há evidência de que essa comunicação ocorreu.
+**Critério de conclusão:** uma pessoa consegue simular cartão aprovado/recusado e gerar um QR Code PIX **exclusivamente demonstrativo**, confirmar o pagamento fictício por ação própria e visualizar resultados persistentes.
 
-**Alinhamento informado em 09/11/2026:** Davi confirmou nesta sessão que já combinou os campos e as rotas com Pedro. O contrato real de integração está documentado em `cart/CONTRATO.md`.
-
-**Critério de conclusão:** com usuário autenticado, é possível adicionar um produto a partir do catálogo, visualizar o carrinho, alterar/remover itens e ver todos os valores atualizados corretamente.
-
-**Não fazer:** finalizar compra, registrar Pedido/ItemPedido, processar pagamentos ou cadastrar endereços.
+**Limite:** não integrar bancos/gateways, não aceitar cartão real, não gerar QR PIX cobrável, não implementar assinatura de webhook, antifraude ou parcelas complexas.
 
 ---
 
-## T05 — Davi · Interface visual da Home, produto e carrinho
+## T10 — Davi · Checkout em etapas e confirmação da compra
 
-**Prioridade:** alta · **Estado:** [~] Em andamento · **Dependências:** T01; integração com T03 e T04
+**Estado:** [ ] Não iniciado  
+**Prioridade:** alta  
+**Base já disponível:** Home, página de produto, login, `base.html` e carrinho da Semana 1  
+**Referências:** fluxos de finalização da compra, telas do SRS e operações de carrinho/pedidos/endereço/pagamento descritas no `context.md`.
 
-**Referências:** mockups da seção 3.1 do SRS, especialmente **Home**, **Página de Produto** e **Meu Carrinho**.
+**Objetivo:** transformar o carrinho da Semana 1 em um fluxo de compra compreensível e navegável, com interface consistente e sem concentrar em um só integrante as telas dos demais módulos.
 
 **Checklist**
 
-- [x] Criar `base.html` reutilizável com **cabeçalho**, navegação, acesso ao catálogo, pesquisa, link para carrinho e área para mensagens do Django.
-- [x] Montar a **Home** em formato de vitrine inspirado em lojas como Amazon, usando Bootstrap e CSS simples, sem copiar integralmente a identidade visual da empresa.
-- [x] Montar **cards de produtos** com nome, preço, tipo, imagem ilustrativa/placeholder e link para detalhes.
-- [x] Montar a **página de produto** com descrição, preço, informações relevantes, disponibilidade, quantidade e botão funcional de adicionar ao carrinho.
-- [x] Montar **Meu Carrinho** com itens, quantidade editável, preço, subtotal, total, remoção com confirmação e estado vazio.
-- [x] Criar **login simples** usando a autenticação nativa do Django, apenas para permitir o uso do carrinho. Não criar cadastro completo de clientes.
-- [x] Integrar os formulários às URLs/views reais de Yuri e Pedro, respeitando CSRF, erros de validação e mensagens.
-- [x] Verificar visualização em desktop e telas menores, mantendo layout organizado e navegação clara.
-- [x] Validar que botões e links expostos realmente funcionam. **Não apresentar “Finalizar compra” como funcional nesta semana**; omitir ou sinalizar que ainda não está disponível.
+- [ ] Implementar o acesso **Finalizar compra** no carrinho somente para usuário autenticado e com itens válidos.
+- [ ] Criar um **checkout simples em etapas**, por exemplo: **1. Endereço → 2. Entrega → 3. Pagamento → 4. Confirmação**, com indicação visual de progresso; não criar uma SPA nem um wizard complexo.
+- [ ] Reutilizar a seleção/cadastro de endereço de Rafael, a cotação de frete de Yuri, o formulário de cartão/PIX de Pedro e a criação do pedido de Breno por contratos simples, sem duplicar a lógica nos templates.
+- [ ] Mostrar um **resumo do pedido** durante a finalização: produtos, quantidades, subtotal, frete e total. Revalidar esses dados no servidor antes de confirmar.
+- [ ] Exibir os campos e resultados adequados ao método de pagamento escolhido: cartão de demonstração com máscara, ou PIX com QR fictício; não recriar o simulador de Pedro.
+- [ ] Criar tela de **confirmação/resultado** com identificador do pedido e seu estado correto: pagamento aprovado, recusado ou PIX pendente. Não declarar compra paga antes da aprovação.
+- [ ] Garantir que atualizar a página, voltar uma etapa ou reenviar o formulário não crie pedidos duplicados nem altere valores já confirmados.
+- [ ] Tratar carrinho vazio, usuário não autenticado, endereço não selecionado, indisponibilidade de estoque e falha de pagamento com mensagens claras.
+- [ ] Manter o layout consistente com a Semana 1, usando templates reutilizáveis, Bootstrap e CSS simples. Ajustar apenas a navegação compartilhada necessária para acessar checkout/pedidos.
+- [ ] Criar testes simples do fluxo e de autorização, inicialmente com serviços simulados/mocks enquanto os outros módulos são desenvolvidos e, na integração final, usando os serviços reais.
 
-**Verificação em 08/11/2026:** a estrutura da Home está nos templates e CSS; a auditoria anterior da T05 foi parcial e antecede a integração funcional posterior do carrinho. Falta revalidar visualmente e concluir a auditoria da integração com Davi. Os itens marcados como feitos representam código presente, não nova aprovação humana da T05.
+**Critério de conclusão:** a partir de um carrinho com produtos, o cliente consegue percorrer as etapas, visualizar valores, escolher uma modalidade de pagamento simulada, concluir ou receber o status apropriado e acessar o pedido gerado.
 
-**Atualização da T05 em 09/11/2026:** as rotas existentes do carrinho foram conferidas e o contrato foi documentado. Foram corrigidas a preservação da palavra pesquisada ao filtrar, a categoria da query ao paginar e a apresentação dos erros com Bootstrap; o login preserva o usuário após erro e o campo de quantidade informa a remoção com zero. Em ambiente temporário com Django 5.2.19, `manage.py check` passou e os 73 testes foram aprovados, incluindo três testes novos de integração dos formulários com CSRF real. A `.venv` de trabalho, que usa Django 6.1.3, foi preservada. A revisão visual foi interrompida pelo Computer Use por não conseguir determinar com segurança a URL atual do Chrome; responsividade, menu móvel e diálogos de confirmação ainda exigem observação no navegador. O relatório de Davi foi atualizado com os resultados, preservando as respostas humanas anteriores e sem atribuir aprovação à versão integrada.
-
-**Critério de conclusão:** as três telas pedidas (Home/Catálogo, Produto, Carrinho) são navegáveis e visualmente coerentes; o usuário consegue executar os fluxos ligados ao backend, sem interfaces extras fora do escopo.
-
-**Não fazer:** login personalizado avançado, páginas de pedido/pagamento/endereço, animações elaboradas, refatoração das regras de negócio dos demais.
+**Limite:** não assumir para si cadastro de endereço, cálculo de frete, motor de pagamentos ou models de pedido — essas funcionalidades pertencem aos outros responsáveis. Não criar telas futuras ou exigir integrações externas reais.
 
 ---
 
-## 3. Verificação integrada da entrega (após T01–T05)
+## 3. Integração e demonstração final da Semana 2
 
-- [x] Em ambiente limpo, seguir o **README** para instalar, migrar e executar localmente.
-- [x] Acessar Home sem erro e visualizar pelo menos um livro e um eletrônico cadastrados pelo Django Admin.
-- [x] Navegar por categoria, abrir detalhe de um produto, buscar e aplicar filtros básicos.
-- [x] Fazer login como cliente de demonstração e adicionar produto ao carrinho.
-- [x] Verificar subtotal e total; adicionar o mesmo produto novamente; alterar quantidade; remover.
-- [x] Verificar estados de carrinho vazio, quantidade inválida e falta de estoque.
-- [x] Conferir que usuário A não acessa o carrinho de usuário B e que apenas administrador cadastra produtos.
-- [x] Executar `python manage.py check` e `python manage.py test`; registrar eventuais falhas ainda existentes.
-- [ ] Confirmar que não existem links funcionais enganosos para checkout ou outras funcionalidades ainda não implementadas.
-- [x] Atualizar README caso a forma real de execução tenha mudado.
+A implementação de cada T06–T10 é responsabilidade do respectivo integrante. **A integração final é uma verificação coletiva**, não uma sexta tarefa que deve ser executada integralmente por Davi ou Breno.
 
-**Verificação técnica em 08/11/2026:** `manage.py check` passou; `makemigrations --check --dry-run` não detectou mudanças; `migrate` aplicou `catalog.0001_initial` e `cart.0001_initial` ao SQLite local; 31 testes de models/Admin do catálogo e 25 testes do carrinho passaram. A suíte completa executou 66 testes com 1 falha de expectativa textual no detalhe do livro (“Informações do livro” no teste × “Sobre o livro” no template). O banco local contém 0 produtos; a fixture de demonstração foi validada por testes, mas não carregada nele para evitar sobrescrever dados por PK. Portanto, os fluxos integrados com produtos reais no banco local e a conferência visual final permanecem pendentes.
+**Roteiro mínimo de demonstração:**
 
-**Atualização técnica em 09/11/2026:** `python manage.py check` passou sem avisos e `python manage.py test` aprovou os 70 testes. As migrações de `catalog` e `cart` estão aplicadas. Antes da carga, todas as tabelas do catálogo local estavam vazias; `python manage.py loaddata catalogo_demo` carregou 27 objetos, incluindo 3 livros e 3 eletrônicos. Requisições ao `runserver` local para Home, categoria, detalhe e busca retornaram HTTP 200; `/admin/` redirecionou ao login e a página de login respondeu HTTP 200. Os itens que exigem observação no navegador, cadastro manual pelo Admin e avaliação humana seguem pendentes.
+- [ ] No Admin, há produtos suficientes para colocar no carrinho; o cliente consegue fazer login.
+- [ ] O cliente cadastra um endereço, consulta um CEP no ViaCEP e define seu endereço padrão.
+- [ ] O cliente coloca produtos no carrinho e inicia o checkout.
+- [ ] O checkout apresenta o endereço e opções de frete com prazo e total coerentes.
+- [ ] Com cartão fictício, é possível demonstrar **uma aprovação e uma recusa** sem realizar cobrança real.
+- [ ] Com PIX, aparece **QR Code fictício**, o pagamento fica inicialmente pendente e somente uma ação de simulação o confirma.
+- [ ] A compra gera um pedido com itens, quantidades, preços registrados, frete e total corretos; atualizações de página não duplicam pedido.
+- [ ] A consulta **Meus pedidos** exibe somente os pedidos do cliente e abre os detalhes.
+- [ ] A entrega pode evoluir por estados válidos e apresenta linha do tempo/data coerentes; um pedido não pago não pode aparecer como entregue.
+- [ ] Os principais formulários respondem corretamente a valores inválidos, falta de estoque e acesso de outro usuário.
+- [ ] Executar `python manage.py check`, `python manage.py test` e migrações aplicáveis; corrigir falhas relacionadas à integração.
+- [ ] As interfaces relevantes são navegáveis em desktop e em uma tela menor, sem botões que simulem funcionalidades não implementadas como se fossem reais.
 
-**Avaliação manual relatada por Breno em 09/11/2026:** realizou os passos 1 a 9 do roteiro de verificação integrada (ambiente limpo, cadastro e consulta de produtos, catálogo e filtros, login, operações e estados do carrinho, isolamento entre usuários e permissão administrativa) e informou que todos funcionaram. Essa informação é relato do integrante; a revisão visual e dos links do passo 10 permanece atribuída a Davi e ainda não foi confirmada nesta avaliação.
+### Decisões pequenas a registrar pelo grupo durante a integração
 
-**Observação:** esta é uma conferência do **resultado integrado**, não uma sexta tarefa atribuída permanentemente a um integrante. Cada responsável deve testar sua entrega; a integração deve ser combinada pelo grupo.
+- **Quando criar e limpar o pedido/carrinho:** adotar um fluxo consistente que não perca itens em uma recusa e não duplique pedidos. Sugestão acadêmica: criar pedido `AGUARDANDO_PAGAMENTO` quando o usuário confirma o checkout; registrar resultado e limpar o carrinho somente após aprovação, evitando reutilizar a mesma intenção de checkout. Para PIX pendente, preservar pedido pendente e não limpá-lo como compra paga.
+- **Frete e prazos:** valores podem ser tabelados ou sorteados, mas a cotação escolhida fica registrada e as datas são coerentes. A modalidade `AGENDADA` representa um agendamento fictício.
+- **Dados digitais:** não exigir endereço/frete para compra comprovadamente apenas de e-book; se o projeto não diferencia digital e físico, apontar a lacuna e alinhar antes de criar uma regra arbitrária.
+- **Histórico e status:** manter um único modelo/serviço de histórico de pedidos e só permitir transições compatíveis com a simulação adotada.
+- **Segurança:** nenhuma transação real, dados reais de cartão, CVV persistido ou dados de terceiros acessíveis. Documentar decisões sobre proteção de dados pessoais do SRS sem alegar conformidade não verificada.
 
-## 4. Fluxo obrigatório dos agentes e auditoria
+## 4. Orientações finais para agentes
 
-1. **Identificar o integrante** pelo contexto ou perguntar diretamente: **Breno, Davi, Rafael, Yuri ou Pedro**.
-2. Ler `AGENTS.md`, o arquivo de contexto e este `TODO.md`; selecionar **somente a tarefa semanal atribuída** ao integrante. Não presumir que ele é responsável para sempre por esse módulo.
-3. Inspecionar o repositório, implementar a tarefa, executar scripts/migrações/testes pertinentes e relatar alterações, resultados e limitações. **Agentes não podem realizar `git commit`, `git push`, rebase, reset ou reescrita de histórico.** O versionamento é decisão dos integrantes.
-4. Após a implementação, conduzir a **auditoria da tarefa desse integrante** com **até 5 perguntas sequenciais no total**, preferencialmente uma por vez, identificadas como `Pergunta 1/5`, `Pergunta 2/5` etc. Ajustar as perguntas às etapas efetivamente implementadas; não repetir perguntas já respondidas. Interfaces de resposta compactas podem ser utilizadas se disponíveis; caso contrário, perguntar em texto.
-5. Perguntar sobre **avaliação da implementação**, **problemas encontrados**, **sugestões de melhoria** e **resultado percebido**. Fazer as perguntas com foco nas partes da tarefa, e não no projeto inteiro. Não inventar resposta, opinião, execução de teste ou aprovação.
-6. Elaborar o relatório de autoria em **primeira pessoa**, fundamentado apenas nas respostas reais e nas verificações observáveis, com: identificação do integrante no cabeçalho, introdução/contexto, tarefa e etapas, achados, recomendações (se houver) e **conclusão em perspectiva humana** sem precisar repetir o nome no texto. **Não incluir campo Instituição**.
-7. Salvar o relatório inicialmente em Markdown, por exemplo `auditorias/semana-atual/breno/T01-auditoria.md`, e exportar para DOCX se solicitado/viável no ambiente. Uma tarefa por auditoria; não misturar avaliações de integrantes diferentes.
+1. Identificar o integrante e sua tarefa **T06–T10** no período vigente. Ler `AGENTS.md`, `context.md` e verificar o código existente; **não** selecionar as tarefas antigas T01–T05.
+2. Implementar apenas o módulo solicitado, incluindo a **interface própria** e os testes pertinentes. Respeitar os contratos compartilhados e não antecipar funções atribuídas a outro integrante.
+3. Scripts, migrações não destrutivas e testes são permitidos conforme `AGENTS.md`. **Não realizar `git add`, `git commit`, `git push`, merges, troca de branches ou operações que alterem o histórico/estado do Git.**
+4. Seguir o fluxo de avaliação e documentação definido em `AGENTS.md`, utilizando o **mesmo relatório individual** ao receber alterações posteriores nesta semana. Não reproduzir protocolos paralelos no `TODO.md`.
+5. **Estados:** `[ ]` não iniciado, `[~]` em andamento, `[x]` concluído após verificação. Não alterar marcações ou atribuições sem solicitação do integrante/grupo.
 
-### Status e acompanhamento
-
-- `[ ]` **Não iniciado:** nenhum código entregue para a tarefa.
-- `[~]` **Em andamento:** há implementação parcial e/ou auditoria pendente.
-- `[x]` **Concluído:** critérios de conclusão verificados, com pendências documentadas quando houver.
-
-**Importante:** a etapa final não pressupõe que esta semana inclua o restante do sistema. A próxima distribuição do professor deverá **atualizar este `TODO.md`**, preservando relatórios de auditoria já produzidos.
+> **Princípio da entrega:** um e-commerce acadêmico simples, funcional e demonstrável, com módulos pequenos desenvolvidos em paralelo e integrações simuladas coerentes — sem infraestrutura profissional desnecessária.
