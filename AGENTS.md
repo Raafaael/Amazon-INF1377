@@ -49,7 +49,7 @@ Em cada nova solicitação relacionada ao desenvolvimento:
 5. Se `TODO.md` não existir, não estiver legível, não identificar a semana ou não listar a tarefa do integrante, **não invente a atribuição**. Explique a lacuna e peça apenas a informação indispensável para prosseguir. Uma solicitação explícita de tarefa pode ser analisada, mas deve ser marcada como **não verificada no `TODO.md`** até sua confirmação.
 6. Não altere a atribuição, a prioridade, a semana ou o status no `TODO.md` sem solicitação explícita. Não interprete uma tarefa semanal como autorização para desenvolver módulos inteiros do sistema.
 
-As perguntas de identificação e seleção de tarefa **não contam** no limite de dez perguntas da auditoria; esse limite diz respeito exclusivamente à **avaliação da implementação pelo integrante**.
+As perguntas de identificação e seleção de tarefa **não contam** no limite de cinco perguntas da auditoria; esse limite diz respeito exclusivamente à **avaliação da implementação pelo integrante**.
 
 ## 4. Fluxo padrão de desenvolvimento
 
@@ -114,7 +114,7 @@ O estado geral da tarefa somente será considerado concluído quando seus crité
 
 Essa atualização é limitada à tarefa do integrante identificado e não autoriza commits, pushes ou outras operações de versionamento Git.
 
-## 5. Protocolo de auditoria crítica e conversacional — até dez perguntas
+## 5. Protocolo de auditoria crítica e conversacional — até cinco perguntas
 
 **Objetivo:** avaliar criticamente **o código efetivamente gerado ou modificado pela IA na solicitação específica do integrante**, a partir do que ele consegue observar, testar, explicar e comparar com seu pedido, com o `TODO.md` e com os requisitos pertinentes. **A auditoria só ocorre depois da implementação**, nunca como questionário genérico ou antecipado. O propósito não é apenas saber se "funcionou" ou se "gostou": é descobrir possíveis desvios, falhas, escolhas discutíveis e oportunidades de melhoria que a própria IA talvez não tenha percebido. **Não é obrigatório encontrar defeitos; é obrigatório diferenciar aprovação fundamentada de aceitação sem verificação.**
 
@@ -124,55 +124,76 @@ Antes da primeira pergunta, o agente deve:
 
 1. Recuperar **o pedido concreto do integrante**, a implementação acabada de produzir, os arquivos/fluxos realmente alterados e os critérios aplicáveis. Identificar até 2 a 5 partes **dessa implementação**, quando fizer sentido. Não auditar funções que o integrante não solicitou nem que a IA não alterou.
 2. Mostrar um **roteiro curto de conferência**, com passos reproduzíveis para o integrante testar ou examinar a implementação: comando, rota, campo, cenário ou arquivo real, conforme a tarefa. Não transformar o roteiro em uma bateria enorme de testes nem em perguntas adicionais.
-3. Sugerir pelo menos um **cenário comum** e um **caso de borda/erro pertinente** (por exemplo: formulário incompleto, filtro sem resultados, item indisponível, login inválido, quantidade zero, configuração em ambiente limpo). Não inventar cenários sem relação com a tarefa.
-4. Distinguir o que **a IA já testou** daquilo que **o integrante efetivamente verificou**. Os testes da IA não são uma resposta à auditoria humana.
-5. Convidar o integrante a **executar ou examinar** as partes relevantes antes de responder; quando a tarefa for apenas infraestrutura ou código sem interface, priorizar execução, revisão de arquivos, estrutura, mensagens e decisões técnicas, não exigir teste visual.
+3. Identificar **quais comportamentos específicos foram realmente implementados ou alterados** e, para cada um, relacionar: **(a) o que deveria acontecer**, **(b) como o integrante pode reproduzir a situação** e **(c) qual resultado precisa observar**. Incluir, quando pertinente, um cenário comum e um cenário de borda/erro, sem inventar funcionalidades ou requisitos não previstos.
+4. **Construir as perguntas a partir dessa lista concreta**, priorizando os comportamentos mais relevantes ou mais suscetíveis a inconsistências. Evitar perguntas intercambiáveis que serviriam para qualquer aplicação, como apenas "gostou do resultado?" ou "encontrou bugs?".
+5. Se houver interface, indicar o elemento real a observar ou acionar (tela, mensagem, botão, campo, bloqueio, estado vazio, redirecionamento). Se houver somente código ou infraestrutura, indicar comando, validação, alteração de dados ou arquivo a inspecionar.
+6. Distinguir o que **a IA já testou** daquilo que **o integrante efetivamente verificou**. Os testes da IA não são uma resposta à auditoria humana.
+7. Convidar o integrante a **executar ou examinar** as partes relevantes antes de responder. Não presuma que ele já executou o cenário; apresente o caminho para testá-lo e pergunte o que observou.
 
 ### Regras da entrevista
 
-1. Faça **no máximo 10 perguntas por rodada de auditoria da solicitação implementada**, no total — **não** dez por etapa ou arquivo. Se houver uma modificação posterior solicitada pelo mesmo integrante, uma **nova rodada curta** poderá avaliar apenas a mudança e possíveis regressões, permanecendo **no mesmo arquivo de auditoria semanal**. Referência: **3–5** para tarefas simples, **5–8** para tarefas médias e **8–10** somente quando houver várias etapas ou inconsistências relevantes. A qualidade da investigação importa mais que atingir dez.
+1. Faça **no máximo 5 perguntas por rodada de auditoria da solicitação implementada**, no total — **não** cinco por etapa ou arquivo. Em tarefas simples, utilize **2–3**; nas demais, **4–5**, apenas quando agregarem informação. Se houver uma modificação posterior solicitada pelo mesmo integrante, uma **nova rodada curta** poderá avaliar somente a mudança e possíveis regressões, permanecendo **no mesmo arquivo de auditoria semanal**. A qualidade da investigação importa mais que atingir o limite.
 2. Faça **uma pergunta por vez** e aguarde a resposta. Adapte a pergunta seguinte às respostas e ao tipo de tarefa; não repita o que já foi respondido e não gaste perguntas com confirmações triviais.
-3. Indique o progresso em todas as perguntas: `Auditoria — pergunta 1/7 | Tarefa Txx | Alteração avaliada: ...`. Escolha um total inicial adequado (**até 10**); encerre antes se houver evidências suficientes. Se precisar de aprofundamento, use as perguntas restantes, nunca ultrapasse dez.
+3. Indique o progresso em todas as perguntas: `Auditoria — pergunta 1/5 | Tarefa Txx | Alteração avaliada: ...`. Escolha um total inicial adequado (**até 5**); encerre antes se houver evidências suficientes. Reserve, quando necessário, uma das perguntas restantes para aprofundar dificuldades, bugs ou escolhas questionadas, sem ultrapassar cinco.
 4. Formule perguntas **neutras e investigativas**, sem elogios embutidos (`"ficou bom, certo?"`) nem pressupor defeitos (`"qual erro a IA cometeu?"`). Prefira: `"O que aconteceu quando você testou...?"`, `"O resultado corresponde ao que você esperava? Por quê?"`, `"Existe alguma decisão que você faria de outra forma?"`.
-5. Distribua as perguntas entre **partes concretas da implementação**, privilegiando: (a) requisitos × resultado, (b) execução/teste pessoal, (c) erros e situações não ideais, (d) clareza da interface ou estrutura, (e) decisões que o integrante entende ou questiona, (f) melhorias e (g) opinião crítica sobre o auxílio da IA.
+5. **Cada pergunta deve apontar um comportamento, elemento ou decisão real da alteração avaliada** e pedir ao integrante que o teste ou examine: "Na tela X, ao fazer Y, o que apareceu? Era o esperado?". Distribua até cinco perguntas por partes concretas, cobrindo preferencialmente: (a) fluxo principal, (b) estado limite ou inválido, (c) bloqueio, mensagem ou consequência da ação, (d) consistência entre caminhos da interface ou regra de negócio e (e) escolha que o integrante manteria ou modificaria. **Não use esses cinco temas como perguntas genéricas prontas**.
+5a. Para cada pergunta, indique **como reproduzir o cenário** em uma frase curta quando necessário (por exemplo: "abra um produto com estoque zero e tente adicioná-lo ao carrinho"). Pergunte **o resultado observado**, a **expectativa** e, quando relevante, a **clareza da mensagem ou interface**. A ação proposta deve ser possível no código gerado; se exigir dados de demonstração, explique como obtê-los sem alterar dados importantes.
 6. Não aceite um `"está bom"` como prova de conformidade. Sem confrontar ou constranger o integrante, use **uma pergunta de aprofundamento** para solicitar um exemplo concreto: `"Qual cenário você verificou para chegar a essa conclusão?"` ou `"Há algum comportamento que ainda não conseguiu conferir?"`. **Não pressione a pessoa a inventar problemas.**
 7. Incentive o integrante a **testar ativamente**, inclusive valores inválidos e fluxos alternativos. Se ele ainda não testou, apresente um próximo passo simples, aplicável à sua tarefa, e permita que retorne com a observação. Não registre como teste humano o que foi executado somente pela IA.
 8. Respostas como `"não testei"`, `"não entendi essa parte"`, `"não vi problema"` ou `"não mudaria nada"` são legítimas. Registre-as com fidelidade e identifique os limites da verificação. Quando a pessoa não compreende uma decisão, explique-a em linguagem acessível e, se fizer sentido, convide-a a avaliá-la na pergunta seguinte.
 9. Se surgir uma inconsistência, peça ao integrante **o cenário observado, o resultado esperado e o resultado obtido**, respeitando as perguntas restantes. Registre a descoberta como **achado do integrante** quando ele a identificou. Se o agente identificar um problema por conta própria, rotule-o como **achado técnico da IA**, não como percepção humana.
 10. **Não corrija silenciosamente o código durante a auditoria.** Registre o achado, combine o ajuste com o integrante e, após a correção, convide-o a retestar quando possível; diferencie `problema relatado`, `problema reproduzido`, `correção implementada` e `correção reavaliada pelo integrante`. Nunca declare a última etapa sem ela ocorrer.
 11. Utilize perguntas curtas e **uma interface de respostas sequenciais/caixas compactas somente se a ferramenta oferecer esse recurso**. Caso contrário, utilize texto normal e numeração de progresso; não envie um questionário inteiro de uma vez.
-12. Em caso de interrupção, registre as respostas já dadas em rascunho e retome a pergunta seguinte sem reiniciar. Identificação do integrante e escolha da tarefa **não contam** no limite de dez; perguntas de avaliação e aprofundamento **contam**.
+12. Em caso de interrupção, registre as respostas já dadas em rascunho e retome a pergunta seguinte sem reiniciar. Identificação do integrante e escolha da tarefa **não contam** no limite de cinco; perguntas de avaliação e aprofundamento **contam**.
 13. A auditoria é **individual e específica à solicitação implementada**. Não substitua a avaliação do código recém-gerado por perguntas gerais sobre a tarefa semanal, o sistema inteiro ou módulos de colegas. **Para alterações posteriores na mesma semana, retome o relatório do integrante e acrescente uma seção datada**, mantendo as avaliações anteriores e diferenciando o que mudou, o que foi retestado e o que permaneceu sem avaliação.
 
-### Roteiro adaptável de perguntas — exemplo de até oito
+### Geração das perguntas — específicas à funcionalidade implementada
 
-Use **somente as perguntas pertinentes ao trabalho real** e substitua os exemplos de objeto/cenário pelos componentes implementados. A sequência abaixo é um guia, não um questionário obrigatório:
+**Não existe um questionário fixo para reutilizar entre integrantes.** Antes da entrevista, o agente deve examinar a solicitação original, o `TODO.md` pertinente, o `git diff`/arquivos alterados e o funcionamento produzido, para selecionar **até cinco situações concretas** que façam sentido naquela implementação. As perguntas devem nascer dessas situações, e não de categorias abstratas como "dificuldades", "bugs" ou "melhorias" isoladamente.
 
-1. **Expectativa e requisito:** `"Ao comparar esta parte com o TODO.md, há algo solicitado que você não encontrou ou que foi feito de outra maneira?"`
-2. **Verificação real:** `"Qual fluxo ou comando você conseguiu executar pessoalmente e o que aconteceu?"`
-3. **Comportamento não ideal:** `"O que observou ao tentar um dado inválido, um caso vazio ou outra situação fora do caminho mais comum?"`
-4. **Adequação da solução:** `"A organização dessa funcionalidade faz sentido para você? Há alguma escolha da IA que gostaria de entender ou questionar?"`
-5. **Integração/uso:** `"Ao utilizar essa parte junto às demais, notou algo confuso, inconsistente ou diferente do esperado?"`
-6. **Revisão crítica:** `"Se você tivesse implementado essa parte sem a IA, o que manteria e o que faria de forma diferente?"`
-7. **Melhorias:** `"Que mudança você priorizaria, se alguma, e por qual motivo?"`
-8. **Síntese humana:** `"Com base no que realmente avaliou, até onde confia no resultado da IA e o que ainda não conseguiu verificar?"`
+Para cada pergunta:
 
-**Exemplos de perguntas específicas, conforme a tarefa:**
+1. **Nomeie a funcionalidade ou elemento realmente implementado**, como botão "Adicionar ao carrinho", campo de CEP, mensagem de indisponibilidade, máscara de cartão, QR Code fictício ou mudança de status.
+2. **Proponha uma ação de teste curta e reproduzível** (ou inspeção de código, quando não há interface), esclarecendo o resultado esperado sem antecipar a resposta do integrante.
+3. **Peça a observação e a opinião do integrante**: o que ocorreu, se corresponde ao pedido, se houve dificuldade ou inconsistência, e se ele faria algo diferente — sem empilhar várias perguntas independentes no mesmo turno.
+4. **Adapte as próximas perguntas** aos comportamentos efetivamente encontrados e ao que a pessoa relatou. Se ela detectar um defeito, use uma pergunta restante para entender o cenário, em vez de seguir um roteiro engessado.
+5. **Use no máximo cinco perguntas em toda a rodada**, uma por vez, com `Auditoria — pergunta X/Y`. O limite inclui aprofundamentos; para mudanças pequenas, 1–3 podem bastar.
 
-- **Inicialização do projeto:** `"Alguém que só tem o README conseguiria iniciar o servidor? Em qual passo você encontrou dúvida ou precisou improvisar?"`
-- **Modelos e validações:** `"Que valores-limite você tentou cadastrar? O sistema os aceitou ou rejeitou conforme a regra documentada?"`
-- **Catálogo e filtros:** `"Ao combinar busca, preço e categoria, quais resultados esperava? O que apareceu, inclusive quando não houve correspondências?"`
-- **Carrinho:** `"O que acontece se adicionar duas vezes o mesmo produto, pedir mais que o estoque ou remover pela quantidade zero? As diferentes ações são consistentes?"`
-- **Interface:** `"Ao navegar pelo fluxo completo, quais controles pareceram confusos ou não corresponderam ao que aconteceu? Conferiu também em uma tela menor?"`
+**Exemplo ilustrativo — se a IA acabou de implementar a indisponibilidade de produtos na interface e o bloqueio de adição ao carrinho:**
 
-**Importante:** perguntas críticas não precisam ter tom negativo; um resultado sem falhas também é válido quando sustentado por exemplos e observações verificáveis. Não induza o integrante a afirmar que revisou código ou testou algo que não revisou/testou.
+> **Auditoria — pergunta 1/5 | Exibição de indisponibilidade**  
+> Abra a página de um produto sem estoque. Como a indisponibilidade aparece para você? A informação fica clara no card e/ou no detalhe, conforme o que foi implementado?
+>
+> **Auditoria — pergunta 2/5 | Tentativa de adicionar**  
+> Na página desse produto indisponível, tente usar a ação de adicionar ao carrinho. O que aconteceu? Esse resultado é coerente com o comportamento esperado?
+>
+> **Auditoria — pergunta 3/5 | Mensagem ao usuário**  
+> Observe a mensagem ou o bloqueio apresentado nessa tentativa. Ela explica adequadamente por que o produto não pode ser adicionado? Houve algum ponto confuso?
+>
+> **Auditoria — pergunta 4/5 | Comparação entre estados**  
+> Agora compare com um produto que tenha estoque. Os botões e avisos mudam da maneira que você esperava? Identificou alguma inconsistência entre as duas situações?
+>
+> **Auditoria — pergunta 5/5 | Decisão e melhoria**  
+> Após esses testes, há alguma escolha da IA nessa funcionalidade que você manteria ou alteraria? O que motivou sua avaliação?
+
+**Essas perguntas são apenas um exemplo e não devem ser copiadas para outras tarefas.** Nem mesmo neste caso se deve perguntar sobre card, detalhe, mensagem ou botão se tais elementos não foram realmente implementados. Se o pedido foi somente corrigir um bloqueio no backend, a auditoria deve se concentrar nesse bloqueio e nos testes pertinentes, não na aparência da interface.
+
+**Outros exemplos de transformação de implementação em teste humano:**
+
+- **ViaCEP implementado:** "Ao informar um CEP inexistente, que mensagem o formulário apresenta e o que acontece com os campos de endereço?" (somente se a consulta e o tratamento de erro foram implementados).
+- **PIX demonstrativo implementado:** "Ao gerar um novo PIX fictício, o QR Code e o valor apresentado correspondem à compra simulada? O que você observou na tela?" (não sugerir que seja um pagamento real).
+- **Máscara de cartão implementada:** "Ao digitar letras e exceder o número de dígitos no campo do cartão, como a máscara se comporta? A validação torna claro o que deve ser corrigido?"
+- **Mudança de status de pedido implementada:** "Ao tentar avançar um pedido ainda não pago, qual estado a interface permite selecionar? O resultado corresponde à regra esperada?"
+- **Instalação do projeto implementada:** "Seguindo somente os comandos do README em um ambiente limpo, em que etapa você conseguiu ou não iniciar o servidor?"
+
+Ao receber uma resposta como "funcionou", registre **qual cenário concreto foi testado**; se isso não estiver claro, aprofunde dentro das perguntas restantes. Não induza elogios nem defeitos: a investigação deve registrar o que a pessoa efetivamente observou, inclusive quando não houver problemas.
 
 ### Continuidade da auditoria após modificações
 
 - Antes de gerar qualquer relatório, **procure o arquivo de auditoria existente do integrante na semana vigente**; leia-o e preserve suas avaliações e histórico.
 - A primeira rodada registra a implementação original. Se o integrante solicitar correção, melhoria ou refatoração **da mesma tarefa ou de outra parte de sua atribuição semanal**, implemente a mudança, teste-a tecnicamente e **adicione uma subseção datada "Revisão N — [mudança]" no mesmo relatório**. Descreva o pedido, o que a IA modificou, as perguntas/respostas novas e a avaliação humana da alteração.
 - Não reescreva retroativamente o julgamento anterior como se o problema nunca tivesse existido; indique, por exemplo, "problema relatado → correção aplicada → reteste do integrante", quando essas etapas ocorrerem.
-- Uma nova rodada deve ter **somente as perguntas necessárias à mudança (normalmente 2–5; limite de 10)**, sem repetir toda a auditoria inicial. O relatório deve ter uma **síntese final atualizada** que reflita as revisões e não duplique textos.
+- Uma nova rodada deve ter **somente as perguntas necessárias à mudança (normalmente 1–3; limite de 5)**, sem repetir toda a auditoria inicial. O relatório deve ter uma **síntese final atualizada** que reflita as revisões e não duplique textos.
 - **Um arquivo Markdown de auditoria por integrante por semana/período.** Mesmo que o integrante realize mais de uma solicitação ou revisão nessa semana, reúna-as em seções identificadas dentro do mesmo documento. Não criar `auditoria-v2.md`, `auditoria-corrigida.md` ou relatórios concorrentes.
 - Se houver versão `.docx`, **atualize/substitua a versão correspondente** após consolidar o Markdown; não produza versões finais divergentes. Nova semana/período pode ter novo arquivo.
 
@@ -301,7 +322,7 @@ Quando um integrante pedir ajuda para implementar ou auditar uma tarefa, o agent
 1. **Se necessário:** "Qual integrante está usando o agente: Breno, Davi, Rafael, Yuri ou Pedro?"
 2. **Após ler `TODO.md`:** "Encontrei sua tarefa desta semana: [tarefa]. Vou trabalhar apenas nela, dividindo-a em [etapas]." Se o pedido já esclarecer integrante e tarefa, avance sem perguntar novamente.
 3. **Após implementar e verificar:** apresente as etapas efetivamente realizadas, o resultado dos testes e as limitações de forma objetiva.
-4. **Após cada implementação ou alteração solicitada:** audite apenas o código produzido nessa solicitação, com **uma pergunta por vez** e indicador `Auditoria — pergunta X/Y`, máximo de dez naquela rodada. Para nova alteração, faça uma rodada curta e registre no mesmo relatório semanal.
+4. **Após cada implementação ou alteração solicitada:** audite apenas o código produzido nessa solicitação, com **uma pergunta por vez** e indicador `Auditoria — pergunta X/Y`, máximo de cinco naquela rodada. Para nova alteração, faça uma rodada curta e registre no mesmo relatório semanal.
 5. **Ao final:** **crie o relatório somente se ainda não existir; caso contrário, atualize o mesmo `.md`** e sua exportação `.docx`, se possível. Apresente arquivos e pendências; **nunca faça commit**.
 
 > **Regra de ouro:** o agente implementa e ajuda a documentar; o integrante **testa, questiona e avalia criticamente com base no que realmente verificou**; somente o integrante gerencia o Git e decide a entrega final.
