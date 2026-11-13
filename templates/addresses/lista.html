@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Meus endereços | Amazon Acadêmico{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-2 mb-4">
+    <div>
+        <p class="eyebrow mb-1">Sua conta</p>
+        <h1 class="h2 mb-0">Meus endereços</h1>
+    </div>
+    <a href="{% url 'addresses:novo' %}" class="btn btn-primary">Adicionar endereço</a>
+</div>
+
+{% if enderecos %}
+    <div class="row g-3">
+        {% for endereco in enderecos %}
+            <div class="col-12 col-md-6 col-xl-4">
+                <article class="surface-card h-100 p-4 d-flex flex-column{% if endereco.padrao %} border-primary{% endif %}">
+                    <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                        <span class="badge text-bg-light">{{ endereco.get_tipo_display }}</span>
+                        {% if endereco.padrao %}<span class="badge text-bg-primary">Padrão</span>{% endif %}
+                    </div>
+                    <h2 class="h6 mb-1">{{ endereco.logradouro }}, {{ endereco.numero }}{% if endereco.complemento %} — {{ endereco.complemento }}{% endif %}</h2>
+                    <p class="text-secondary small mb-3">
+                        {{ endereco.bairro }}<br>
+                        {{ endereco.cidade }}/{{ endereco.estado }}<br>
+                        CEP {{ endereco.cep }}
+                    </p>
+                    <div class="mt-auto d-flex flex-wrap gap-2">
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'addresses:editar' endereco.pk %}">Editar</a>
+                        {% if not endereco.padrao %}
+                            <form method="post" action="{% url 'addresses:tornar_padrao' endereco.pk %}">
+                                {% csrf_token %}
+                                <button class="btn btn-sm btn-outline-secondary" type="submit">Tornar padrão</button>
+                            </form>
+                        {% endif %}
+                        <form method="post" action="{% url 'addresses:excluir' endereco.pk %}" onsubmit="return confirm('Excluir o endereço &quot;{{ endereco.logradouro|escapejs }}, {{ endereco.numero|escapejs }}&quot;?');">
+                            {% csrf_token %}
+                            <button class="btn btn-sm btn-link text-danger px-0" type="submit">Excluir</button>
+                        </form>
+                    </div>
+                </article>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <section class="surface-card empty-state py-5">
+        <div class="empty-icon" aria-hidden="true">🏠</div>
+        <h2 class="h4">Você ainda não cadastrou endereços</h2>
+        <p class="text-secondary">Cadastre um endereço para usá-lo nas suas compras com entrega física.</p>
+        <a class="btn btn-primary" href="{% url 'addresses:novo' %}">Adicionar endereço</a>
+    </section>
+{% endif %}
+{% endblock %}

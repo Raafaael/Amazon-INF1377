@@ -102,7 +102,7 @@ Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem
 
 ## T07 — Rafael · Endereços, endereço padrão e ViaCEP
 
-**Estado:** [ ] Não iniciado  
+**Estado:** [x] Concluído — implementado, auditado e retestado (relatório em `auditorias/semana-2/rafael/`); seleção de endereço ainda a validar na integração com o checkout (T10)\
 **Prioridade:** alta  
 **Base já disponível:** usuário autenticado Django  
 **Referências:** UC06, RN-09 a RN-11 e requisitos de privacidade/endereço do `context.md`.
@@ -111,15 +111,15 @@ Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem
 
 **Checklist**
 
-- [ ] Criar o model **`Endereco`** associado ao usuário, com CEP, logradouro, número, complemento opcional, bairro, cidade, estado, tipo e indicador de endereço padrão (ou outra representação simples equivalente).
-- [ ] Implementar cadastro, listagem, edição e seleção de endereço padrão, com exclusividade: **no máximo um padrão por usuário**.
-- [ ] Utilizar **ViaCEP** para preencher automaticamente os campos disponíveis depois da consulta de um CEP válido. Permitir que o usuário complete os campos não retornados.
-- [ ] Tratar CEP com formato inválido, CEP inexistente, resposta incompleta e falha/indisponibilidade do serviço, com mensagens claras.
-- [ ] Criar a página **Meus endereços** com cartões/listagem e formulário organizado, incluindo máscara simples `00000-000` para o CEP. A máscara não substitui validação no servidor.
-- [ ] Validar o número obrigatório e o complemento opcional; impedir consulta, alteração ou exclusão de endereços pertencentes a outro usuário.
-- [ ] Disponibilizar para o checkout a listagem dos endereços do usuário e a escolha de um endereço existente; preparar ligação simples para criar um novo endereço quando necessário.
-- [ ] Criar testes com respostas ViaCEP simuladas para não depender da internet; verificar endereço padrão e isolamento entre usuários.
-- [ ] Documentar a estrutura do endereço utilizada pelo pedido e pelo checkout, sem exigir que esses módulos estejam prontos para testar o cadastro.
+- [x] Criar o model **`Endereco`** associado ao usuário, com CEP, logradouro, número, complemento opcional, bairro, cidade, estado, tipo e indicador de endereço padrão (ou outra representação simples equivalente).
+- [x] Implementar cadastro, listagem, edição e seleção de endereço padrão, com exclusividade: **no máximo um padrão por usuário**.
+- [x] Utilizar **ViaCEP** para preencher automaticamente os campos disponíveis depois da consulta de um CEP válido. Permitir que o usuário complete os campos não retornados.
+- [x] Tratar CEP com formato inválido, CEP inexistente, resposta incompleta e falha/indisponibilidade do serviço, com mensagens claras.
+- [x] Criar a página **Meus endereços** com cartões/listagem e formulário organizado, incluindo máscara simples `00000-000` para o CEP. A máscara não substitui validação no servidor.
+- [x] Validar o número obrigatório e o complemento opcional; impedir consulta, alteração ou exclusão de endereços pertencentes a outro usuário.
+- [x] Disponibilizar para o checkout a listagem dos endereços do usuário e a escolha de um endereço existente; preparar ligação simples para criar um novo endereço quando necessário.
+- [x] Criar testes com respostas ViaCEP simuladas para não depender da internet; verificar endereço padrão e isolamento entre usuários.
+- [x] Documentar a estrutura do endereço utilizada pelo pedido e pelo checkout, sem exigir que esses módulos estejam prontos para testar o cadastro.
 
 **Critério de conclusão:** o usuário cadastra um endereço com preenchimento por CEP, edita seus dados, define um padrão e consegue selecioná-lo por uma interface própria; falhas da consulta externa são tratadas adequadamente.
 

@@ -1,0 +1,21 @@
+{% comment %}
+Partial para o checkout (T10). Contexto esperado:
+  form     -> addresses.forms.SelecaoEnderecoForm(usuario=request.user, ...)
+  next_url -> URL para onde voltar depois de cadastrar um novo endereço
+Deve ser incluído dentro de um <form method="post"> do checkout.
+{% endcomment %}
+<fieldset class="mb-3">
+    <legend class="h6">{{ form.endereco.label }}</legend>
+    {% if form.fields.endereco.queryset.exists %}
+        {% for opcao in form.endereco %}
+            <div class="form-check surface-card p-3 ps-5 mb-2">
+                {{ opcao.tag }}
+                <label class="form-check-label" for="{{ opcao.id_for_label }}">{{ opcao.choice_label }}</label>
+            </div>
+        {% endfor %}
+        {% for erro in form.endereco.errors %}<div class="text-danger small">{{ erro }}</div>{% endfor %}
+    {% else %}
+        <p class="text-secondary mb-2">Você ainda não tem endereços cadastrados.</p>
+    {% endif %}
+    <a class="btn btn-sm btn-outline-primary" href="{% url 'addresses:novo' %}{% if next_url %}?next={{ next_url|urlencode }}{% endif %}">Cadastrar novo endereço</a>
+</fieldset>

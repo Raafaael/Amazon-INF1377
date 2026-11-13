@@ -27,6 +27,7 @@
                     <a class="nav-link" href="{% url 'catalog:index' %}">Catálogo</a>
                     <a class="nav-link" href="{% url 'cart:detail' %}">Meu carrinho</a>
                     {% if user.is_authenticated %}
+                        <a class="nav-link" href="{% url 'addresses:lista' %}">Meus endereços</a>
                         <span class="nav-link nav-greeting">Olá, {{ user.get_short_name|default:user.username }}</span>
                         <form method="post" action="{% url 'logout' %}" class="d-inline">
                             {% csrf_token %}
