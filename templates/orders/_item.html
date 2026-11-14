@@ -1,0 +1,10 @@
+<div class="d-flex align-items-center gap-3 border-top py-3">
+    <div class="cart-thumb px-3 flex-shrink-0" role="img" aria-label="Imagem ilustrativa de {{ item.produto.get_tipo_display }}">
+        {% if item.produto.tipo == 'LIVRO' %}📚{% else %}⌨️{% endif %}
+    </div>
+    <div class="flex-grow-1 text-break">
+        <a href="{% url 'catalog:product_detail' item.produto_id %}" class="fw-semibold">{{ item.nome_produto }}</a>
+        <span class="small text-secondary d-block">{{ item.quantidade }} × R$ {{ item.preco_unitario|floatformat:2 }}</span>
+    </div>
+    <span class="text-nowrap">R$ {{ item.subtotal|floatformat:2 }}</span>
+</div>

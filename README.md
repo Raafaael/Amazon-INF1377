@@ -48,6 +48,7 @@ Depois de executar `python manage.py runserver`, abra:
 - <http://127.0.0.1:8000/admin/> — Administração do Django; entre com o superusuário criado acima;
 - <http://127.0.0.1:8000/accounts/login/> — tela de login; a conta criada acima também pode entrar aqui e será redirecionada à página inicial;
 - <http://127.0.0.1:8000/carrinho/> — carrinho do usuário autenticado.
+- <http://127.0.0.1:8000/pedidos/> — histórico de pedidos do usuário autenticado.
 
 Para preencher um **banco local de demonstração vazio**, depois de `migrate` você pode executar `python manage.py loaddata catalogo_demo`. A fixture inclui livros, eletrônicos e categorias. Ela usa identificadores fixos e **pode sobrescrever registros com os mesmos IDs**; não a recarregue sobre dados que queira preservar. Também é possível cadastrar produtos pelo Admin, nas seções **Livros** e **Eletrônicos**.
 
@@ -57,4 +58,10 @@ Para verificar a configuração sem iniciar o servidor, execute `python manage.p
 
 O projeto usa `DEBUG=True` e uma chave pública de desenvolvimento como valor padrão de `DJANGO_SECRET_KEY`. Essa configuração serve somente para execução local. Caso queira fornecer uma chave própria nesta sessão do PowerShell, execute `$env:DJANGO_SECRET_KEY = 'sua-chave-local'` antes de iniciar o servidor; no Linux/macOS, use `export DJANGO_SECRET_KEY='sua-chave-local'`. Não registre chaves reais no repositório.
 
-Os diretórios `templates/` e `static/` estão configurados. O arquivo `db.sqlite3`, o ambiente `.venv` e arquivos gerados são ignorados pelo Git. Checkout, pedidos e pagamentos permanecem fora desta entrega.
+Os diretórios `templates/` e `static/` estão configurados. O arquivo `db.sqlite3`, o ambiente `.venv` e arquivos gerados são ignorados pelo Git. O módulo de **pedidos** já registra e consulta compras simuladas; checkout, pagamento e frete continuam sob as tarefas dos demais integrantes.
+
+### Demonstração de pedidos antes do checkout
+
+Depois de migrar o banco e criar uma conta local, entre na aplicação e adicione um produto ao carrinho. Em outro terminal, na raiz do projeto, execute `python manage.py criar_pedido_demo NOME_DO_USUARIO`. O comando registra um pedido fictício e informa seu número. Reexecutar sem opções devolve o **mesmo** pedido, sem duplicá-lo; para criar **outro** pedido com os itens atuais do carrinho, execute `python manage.py criar_pedido_demo NOME_DO_USUARIO --novo`. Abra `/pedidos/` autenticado com essa conta para ver a lista, os detalhes, os valores e o primeiro evento do histórico. O pedido permanece **aguardando pagamento**; a demonstração não cobra, não baixa estoque e não limpa o carrinho. O contrato de integração está em `orders/CONTRATO.md`.
+
+Para verificar a implementação, execute `python manage.py check` e `python manage.py test orders`. A suíte completa usa `python manage.py test`.

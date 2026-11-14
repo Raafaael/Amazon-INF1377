@@ -75,7 +75,7 @@ Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem
 
 ## T06 — Breno · Pedidos e consulta do histórico de compras
 
-**Estado:** [ ] Não iniciado  
+**Estado:** [x] Concluído — modelos, serviço, consulta, demonstração e testes da T06 verificados; integração com checkout, pagamento e entrega depende das T08–T10
 **Prioridade:** alta  
 **Base já disponível:** modelos de produtos, carrinho e autenticação da Semana 1  
 **Referências:** UC07 (detalhes), UC10 (consultar pedidos), regras de pedidos no `context.md`, modelo relacional (`Pedido`, `ItemPedido`, `StatusPedido`, `HistoricoStatusPedido`).
@@ -84,15 +84,15 @@ Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem
 
 **Checklist**
 
-- [ ] Criar o app/módulo de pedidos e os models necessários de **`Pedido`**, **`ItemPedido`** e histórico de status, aproveitando a nomenclatura do modelo relacional quando adequado.
-- [ ] Registrar cliente, data, estado, itens, quantidades, preço unitário registrado na compra, subtotal de itens, frete e total; informações de entrega são opcionais quando não se aplicam.
-- [ ] Criar serviço simples para gerar um pedido a partir dos itens do carrinho, validando carrinho não vazio, quantidades e disponibilidade, sem duplicar o pedido em uma submissão repetida do mesmo checkout.
-- [ ] Preservar os preços do pedido mesmo quando o preço do `Produto` mudar depois; calcular valores com `Decimal`.
-- [ ] Disponibilizar atualização de status por um serviço controlado e registro de **histórico** (data, novo estado e observação quando aplicável); restringir transições incoerentes.
-- [ ] Criar a página **Meus pedidos** (mais recentes primeiro) com identificador, data, valor e situação, e a página **Detalhes do pedido** com itens, totais, tipo/endereço de entrega quando aplicáveis e histórico.
-- [ ] Garantir que um cliente não veja o pedido de outro. Não permitir alteração arbitrária de status por clientes.
-- [ ] Criar dados/testes de demonstração para consultar pedidos sem depender da implementação pronta do checkout, do pagamento ou do frete.
-- [ ] Documentar para Pedro e Yuri como consultar o pedido e atualizar o status; documentar para Davi como criar o pedido no fluxo de checkout.
+- [x] Criar o app/módulo de pedidos e os models necessários de **`Pedido`**, **`ItemPedido`** e histórico de status, aproveitando a nomenclatura do modelo relacional quando adequado.
+- [x] Registrar cliente, data, estado, itens, quantidades, preço unitário registrado na compra, subtotal de itens, frete e total; informações de entrega são opcionais quando não se aplicam.
+- [x] Criar serviço simples para gerar um pedido a partir dos itens do carrinho, validando carrinho não vazio, quantidades e disponibilidade, sem duplicar o pedido em uma submissão repetida do mesmo checkout.
+- [x] Preservar os preços do pedido mesmo quando o preço do `Produto` mudar depois; calcular valores com `Decimal`.
+- [x] Disponibilizar atualização de status por um serviço controlado e registro de **histórico** (data, novo estado e observação quando aplicável); restringir transições incoerentes.
+- [x] Criar a página **Meus pedidos** (mais recentes primeiro) com identificador, data, valor e situação, e a página **Detalhes do pedido** com itens, totais, tipo/endereço de entrega quando aplicáveis e histórico.
+- [x] Garantir que um cliente não veja o pedido de outro. Não permitir alteração arbitrária de status por clientes.
+- [x] Criar dados/testes de demonstração para consultar pedidos sem depender da implementação pronta do checkout, do pagamento ou do frete.
+- [x] Documentar para Pedro e Yuri como consultar o pedido e atualizar o status; documentar para Davi como criar o pedido no fluxo de checkout.
 
 **Critério de conclusão:** é possível criar um pedido de demonstração consistente, consultar uma listagem e detalhes próprios e observar seu histórico; modelos e serviços ficam preparados para a finalização real da Semana 2.
 
