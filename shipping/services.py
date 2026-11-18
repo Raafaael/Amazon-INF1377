@@ -1,5 +1,6 @@
 from datetime import timedelta
 from decimal import Decimal
+from random import randint
 
 from django.core.exceptions import ValidationError
 from django.utils import timezone
@@ -8,17 +9,18 @@ from orders.models import Pedido
 from orders.services import atualizar_status
 
 
-TABELA = {
-    'PADRAO': (Decimal('15.90'), 7),
-    'EXPRESSA': (Decimal('29.90'), 3),
+FAIXAS_FRETE_CENTAVOS = {
+    'PADRAO': (1200, 2000, 7),
+    'EXPRESSA': (2500, 3500, 3),
 }
 
 
 def cotar_frete(cep, modalidade, hoje=None):
-    """Retorna uma cotação fictícia fixa, sem sorteio ou dependência externa."""
-    if modalidade not in TABELA:
+    """Retorna uma cotação fictícia aleatória dentro dos limites da modalidade."""
+    if modalidade not in FAIXAS_FRETE_CENTAVOS:
         raise ValidationError('Modalidade de entrega inválida.')
-    valor, prazo_padrao = TABELA[modalidade]
+    minimo, maximo, prazo_padrao = FAIXAS_FRETE_CENTAVOS[modalidade]
+    valor = Decimal(randint(minimo, maximo)).scaleb(-2)
 
     return {
         'valor': valor,

@@ -140,7 +140,7 @@ Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem
 
 - [x] Implementar um serviço de cotação fictícia que receba o CEP (quando aplicável) e a modalidade e devolva **valor em reais e prazo estimado em dias**.
 - [x] Oferecer modalidades **Padrão** e **Expressa**. A modalidade Agendada e o respectivo campo de data foram retirados a pedido de Yuri, após observar que custavam mais que a entrega padrão e demoravam mais.
-- [x] Usar uma lógica simples e explicável para cotação (tabela fixa por modalidade ou aleatoriedade controlada); evitar retornar valores diferentes ao apenas recarregar a página.
+- [x] Usar uma lógica simples e explicável para cotação (tabela fixa por modalidade ou aleatoriedade controlada); Padrão varia entre R$ 12,00 e R$ 20,00, e Expressa entre R$ 25,00 e R$ 35,00, garantindo Padrão sempre mais barato. Testes controlam a aleatoriedade para resultados reproduzíveis.
 - [x] Criar um pequeno **simulador de frete** com CEP, opções de entrega e comparação dos valores/prazos, utilizando Bootstrap e templates do Django.
 - [x] Implementar a evolução fictícia do pedido após pagamento aprovado, por exemplo **EM_PREPARACAO → ENVIADO → ENTREGUE**, com datas coerentes e sem saltos incoerentes ou entrega anterior ao envio.
 - [x] Criar uma **linha do tempo de acompanhamento** com status atual, eventos e previsão; disponibilizar avanço de estado por botão de simulação com permissão administrativa ou por mecanismo demonstrativo protegido, nunca por alteração livre de qualquer cliente.

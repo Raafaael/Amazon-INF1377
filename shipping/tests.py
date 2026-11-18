@@ -1,4 +1,5 @@
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -14,15 +15,18 @@ from .services import cotar_frete, avancar_entrega
 
 
 class FreteTests(TestCase):
-    def test_cotacoes_sao_deterministicas_e_comparaveis(self):
+    @patch('shipping.services.randint', side_effect=[1200, 3500])
+    def test_frete_aleatorio_respeita_limites_e_padrao_e_mais_barato(self, randint_mock):
         hoje = timezone.localdate()
         padrao = cotar_frete('01001-000', 'PADRAO', hoje=hoje)
         expressa = cotar_frete('01001-000', 'EXPRESSA', hoje=hoje)
-        self.assertEqual(padrao['valor'], Decimal('15.90'))
+        self.assertEqual(padrao['valor'], Decimal('12'))
         self.assertEqual(padrao['prazo_dias'], 7)
-        self.assertEqual(expressa['valor'], Decimal('29.90'))
+        self.assertEqual(expressa['valor'], Decimal('35'))
         self.assertEqual(expressa['prazo_dias'], 3)
-        self.assertEqual(padrao, cotar_frete('01001-000', 'PADRAO', hoje=hoje))
+        self.assertLess(padrao['valor'], expressa['valor'])
+        self.assertEqual(randint_mock.call_args_list[0].args, (1200, 2000))
+        self.assertEqual(randint_mock.call_args_list[1].args, (2500, 3500))
 
     def test_rejeita_modalidade_agendada_ou_desconhecida(self):
         hoje = timezone.localdate()
@@ -88,10 +92,11 @@ class EntregaTests(DadosCatalogoMixin, TestCase):
         resposta_inicial = self.client.get(url)
         self.assertNotContains(resposta_inicial, 'Agendada')
         self.assertNotIn('data_agendada', resposta_inicial.context['form'].fields)
-        resposta = self.client.post(reverse('shipping:simulador'), {
-            'cep': '01001-000',
-            'modalidade': 'EXPRESSA',
-        })
+        with patch('shipping.services.randint', side_effect=[1590, 2990]):
+            resposta = self.client.post(url, {
+                'cep': '01001-000',
+                'modalidade': 'EXPRESSA',
+            })
         self.assertEqual(resposta.status_code, 200)
         self.assertEqual(len(resposta.context['cotacoes']), 2)
         self.assertContains(resposta, 'R$ 15,90')

@@ -14,7 +14,7 @@ Esta auditoria avalia a implementação específica da T08: cotação demonstrat
 
 ## 2. Descrição da tarefa e implementação realizada
 
-A T08 prevê comparar frete e prazo em modalidades simuladas e acompanhar a evolução de pedidos após pagamento aprovado. A implementação criou o app `shipping`, com cotações determinísticas para Padrão e Expressa, página de comparação com CEP e ação administrativa protegida para avançar estados usando o serviço existente de pedidos.
+A T08 prevê comparar frete e prazo em modalidades simuladas e acompanhar a evolução de pedidos após pagamento aprovado. A implementação criou o app `shipping`, com cotações aleatórias limitadas para Padrão e Expressa, página de comparação com CEP e ação administrativa protegida para avançar estados usando o serviço existente de pedidos.
 
 Na primeira versão, o simulador também oferecia Agendada. Após testar a interface, Yuri solicitou retirar essa modalidade, observando que ela era desnecessária e mais cara que a entrega padrão apesar do prazo maior. A opção e o campo de data foram removidos do simulador; a modalidade histórica ainda presente no modelo compartilhado `Pedido.TipoEntrega` foi preservada para não alterar o contrato de outro módulo. A gravação das escolhas de frete no pedido segue dependente da integração com o checkout T10.
 
@@ -54,6 +54,16 @@ Arquivos alterados nesta implementação e revisão: `shipping/forms.py`, `shipp
 **Encaminhamento:** alteração retestada pelo integrante; gravação da cotação no pedido continua pendente da T10.  
 **Resultado:** aprovada para a interface revista.
 
+### 3.4. Revisão 2 — 18/11/2026 — variação controlada dos valores de frete
+
+**Pedido específico:** variar os valores calculados de Padrão e Expressa, sem perder a regra de que Padrão deve ser sempre mais barato.
+**Implementação adicional:** cada cotação sorteia centavos em faixas separadas: Padrão, de R$ 12,00 a R$ 20,00; Expressa, de R$ 25,00 a R$ 35,00. A separação das faixas garante a ordem de preços; o prazo permanece fixo por modalidade. Os testes substituem o sorteio por valores controlados para serem reproduzíveis.
+**Testes da IA:** `.venv/bin/python manage.py test shipping orders` — 24 testes passaram; `.venv/bin/python manage.py check` — sem problemas; `.venv/bin/python manage.py makemigrations --check --dry-run` — nenhuma migration necessária.
+**Avaliação do integrante:** Yuri afirmou que “os valores observados foram consistentes” e informou uma cotação de Padrão R$ 14,19 e Expressa R$ 32,53. A resposta confirma um exemplo dentro das faixas e com a relação de preço solicitada; não foram fornecidos dois pares de cotações para comparar diretamente a variação entre recálculos.
+**Problemas identificados:** nenhum relatado.
+**Encaminhamento:** alteração implementada e validada tecnicamente; o integrante observou valores consistentes, mas a variação entre duas cotações não ficou demonstrada pelas respostas registradas.
+**Resultado:** aprovada com ressalva quanto à evidência humana da variação entre recálculos.
+
 ## 4. Síntese dos achados
 
 | Etapa | Evidência/observação | Resultado | Pendências |
@@ -61,18 +71,19 @@ Arquivos alterados nesta implementação e revisão: `shipping/forms.py`, `shipp
 | Valores e prazos de frete | Yuri observou Padrão R$ 15,90, Expressa R$ 29,90 e Agendada R$ 24,90 na primeira versão | Aprovada com ressalva inicial; Agendada retirada | Prazo exato observado para Agendada não informado |
 | Acompanhamento | Yuri observou pagamento aprovado → preparação → enviado → entregue, em ordem esperada | Aprovada | Nenhuma relatada |
 | Revisão da interface | Yuri confirmou que o campo Data Agendada não aparece mais e que os valores estão como esperado | Aprovada | Nenhuma relatada |
-| Persistência no pedido | A cotação é determinística, mas o checkout T10 ainda não a grava no pedido | Parcial | Integração depende da T10 |
+| Revisão dos valores | Faixas aleatórias controladas e relação Padrão < Expressa cobertas por teste; Yuri relatou uma amostra de R$ 14,19 e R$ 32,53 | Aprovada com ressalva | Não houve comparação humana entre dois pares de recotações |
+| Persistência no pedido | O checkout T10 ainda não grava a cotação no pedido | Parcial | Integração depende da T10 |
 
 ## 5. Recomendações
 
 **Recomendação do integrante:** manter somente Padrão e Expressa no simulador; retirar a modalidade Agendada.  
-**Análise técnica da IA:** integrar os valores e prazos escolhidos ao pedido quando o checkout T10 estiver disponível e validar que a cotação confirmada não seja recalculada após a criação do pedido. A opção `AGENDADA` preservada no modelo compartilhado não é oferecida pelo simulador revisado.
+**Análise técnica da IA:** integrar os valores e prazos escolhidos ao pedido quando o checkout T10 estiver disponível e validar que a cotação confirmada não seja recalculada após a criação do pedido. As faixas disjuntas garantem tecnicamente que a opção Padrão permaneça mais barata. A opção `AGENDADA` preservada no modelo compartilhado não é oferecida pelo simulador revisado.
 
 ## 6. Conclusão e avaliação do uso da IA
 
-Eu testei os valores do simulador e considerei que estavam como esperado. Também observei os status do pedido avançando na ordem correta. Pedi a remoção da entrega Agendada porque não a considero necessária e ela custava mais que a entrega padrão, apesar de demorar mais. Após a alteração, confirmei que o campo de data não aparece mais e que os valores estão como esperado. A integração da cotação ao pedido ainda depende do checkout.
+Eu testei os valores do simulador e considerei que estavam como esperado. Também observei os status do pedido avançando na ordem correta. Pedi a remoção da entrega Agendada porque não a considero necessária e ela custava mais que a entrega padrão, apesar de demorar mais. Após a alteração, confirmei que o campo de data não aparece mais e que os valores estão como esperado. Pedi que os valores de frete variassem dentro de limites, mantendo Padrão mais barato que Expressa. Na conferência, observei Padrão a R$ 14,19 e Expressa a R$ 32,53, que considerei consistentes. A integração da cotação ao pedido ainda depende do checkout.
 
-**Parecer final:** a interface de frete e a sequência de acompanhamento foram verificadas e atendem ao que examinei; a persistência integrada da cotação permanece pendente da T10.
+**Parecer final:** a interface de frete e a sequência de acompanhamento foram verificadas; os limites e a ordem de preço também foram validados tecnicamente. A variação entre recálculos não foi comparada explicitamente na avaliação humana, e a persistência integrada da cotação permanece pendente da T10.
 
 ---
 **Responsável pela avaliação:** Yuri  
