@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Pagamentos pendentes | Amazon Acadêmico{% endblock %}
+
+{% block content %}
+<div class="mb-4"><p class="eyebrow mb-1">Pagamento simulado</p><h1 class="h2 mb-0">Pedidos aguardando pagamento</h1></div>
+{% if pedidos %}
+    <div class="surface-card p-3 p-md-4">
+        {% for pedido in pedidos %}
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 {% if not forloop.first %}border-top pt-3 mt-3{% endif %}">
+                <div><strong>Pedido #{{ pedido.pk }}</strong>
+                    <span class="text-secondary small"> · {{ pedido.criado_em|date:'d/m/Y H:i' }} · {{ pedido.get_status_display }}</span>
+                    <div>R$ {{ pedido.total|floatformat:2 }}</div></div>
+                <a class="btn btn-primary btn-sm" href="{% url 'payments:pagar' pedido.pk %}">Pagar (simulado)</a>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <section class="surface-card empty-state py-5">
+        <h2 class="h4">Nenhum pedido aguardando pagamento</h2>
+        <p class="text-secondary">Os pedidos criados no checkout aparecem aqui até o pagamento simulado ser aprovado.</p>
+        <a class="btn btn-outline-primary" href="{% url 'orders:lista' %}">Ver meus pedidos</a>
+    </section>
+{% endif %}
+{% endblock %}

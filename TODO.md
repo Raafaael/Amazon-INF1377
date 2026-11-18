@@ -156,7 +156,7 @@ Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem
 
 ## T09 — Pedro · Pagamento simulado com cartão e PIX (QR Code)
 
-**Estado:** [ ] Não iniciado  
+**Estado:** [x] Concluído — implementado, auditado e retestado (relatório em `auditorias/semana-2/pedro/`); uso dos partials no checkout ainda a validar na integração com a T10  
 **Prioridade:** alta  
 **Base já disponível:** usuário autenticado, valor fictício da compra; pedido pode ser mock nos testes iniciais  
 **Referências:** UC09, regras de pagamentos simulados e `Pagamento`, `PagamentoCartao`, `PagamentoPix` do `context.md`.
@@ -165,16 +165,16 @@ Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem
 
 **Checklist**
 
-- [ ] Criar lógica/modelos mínimos para registrar **modalidade, valor, status, referência do pedido e resultado simulado**, sem duplicar o total da compra de forma inconsistente.
-- [ ] Implementar pagamento por **cartão fictício**, com formulário de número de demonstração, nome, validade e CVV apenas para validação transitória; incluir **máscaras de entrada** para número e validade e indicação clara de ambiente de simulação.
-- [ ] Validar o formato dos dados no servidor. **Nunca salvar CVV, número completo de cartão real ou credenciais bancárias**; guardar, se necessário, somente bandeira fictícia e últimos quatro dígitos para exibição.
-- [ ] Simular cartão **aprovado ou recusado**, usando booleano/aleatoriedade controlada ou opção de cenário de teste, com mensagem explicando o resultado.
-- [ ] Implementar **PIX fictício** com identificador/código de demonstração e **QR Code gerado localmente** (por exemplo, com dependência Python pequena como `qrcode`, se necessária). O conteúdo do QR deve ser uma referência **não pagável**, rotulada como `PIX SIMULADO`, e não uma cobrança PIX real.
-- [ ] Disponibilizar ações de **Simular pagamento PIX** e, se pertinente, de cancelamento/expiração simulada, atualizando o status apenas por ação explícita.
-- [ ] Criar uma página/componente próprio para demonstrar **Cartão** e **PIX**, com feedback de pagamento aprovado, recusado ou pendente; oferecer partial/form reutilizável no checkout de Davi.
-- [ ] Respeitar a regra: somente pagamento aprovado permite marcar pedido como pago; valor registrado deve coincidir com o do pedido; não aprovar recusa nem confirmar PIX automaticamente ao mostrar o QR.
-- [ ] Criar testes para aprovação, recusa, PIX pendente e confirmado, valores e dados inválidos, permissões e persistência do resultado; testes reproduzíveis sem depender de sorteio.
-- [ ] Documentar para Breno e Davi a chamada de processamento e os possíveis resultados, sem exigir que o checkout ou o model final do pedido estejam concluídos para iniciar.
+- [x] Criar lógica/modelos mínimos para registrar **modalidade, valor, status, referência do pedido e resultado simulado**, sem duplicar o total da compra de forma inconsistente.
+- [x] Implementar pagamento por **cartão fictício**, com formulário de número de demonstração, nome, validade e CVV apenas para validação transitória; incluir **máscaras de entrada** para número e validade e indicação clara de ambiente de simulação.
+- [x] Validar o formato dos dados no servidor. **Nunca salvar CVV, número completo de cartão real ou credenciais bancárias**; guardar, se necessário, somente bandeira fictícia e últimos quatro dígitos para exibição.
+- [x] Simular cartão **aprovado ou recusado**, usando booleano/aleatoriedade controlada ou opção de cenário de teste, com mensagem explicando o resultado.
+- [x] Implementar **PIX fictício** com identificador/código de demonstração e **QR Code gerado localmente** (por exemplo, com dependência Python pequena como `qrcode`, se necessária). O conteúdo do QR deve ser uma referência **não pagável**, rotulada como `PIX SIMULADO`, e não uma cobrança PIX real.
+- [x] Disponibilizar ações de **Simular pagamento PIX** e, se pertinente, de cancelamento/expiração simulada, atualizando o status apenas por ação explícita.
+- [~] Criar uma página/componente próprio para demonstrar **Cartão** e **PIX**, com feedback de pagamento aprovado, recusado ou pendente; oferecer partial/form reutilizável no checkout de Davi.
+- [x] Respeitar a regra: somente pagamento aprovado permite marcar pedido como pago; valor registrado deve coincidir com o do pedido; não aprovar recusa nem confirmar PIX automaticamente ao mostrar o QR.
+- [x] Criar testes para aprovação, recusa, PIX pendente e confirmado, valores e dados inválidos, permissões e persistência do resultado; testes reproduzíveis sem depender de sorteio.
+- [x] Documentar para Breno e Davi a chamada de processamento e os possíveis resultados, sem exigir que o checkout ou o model final do pedido estejam concluídos para iniciar.
 
 **Critério de conclusão:** uma pessoa consegue simular cartão aprovado/recusado e gerar um QR Code PIX **exclusivamente demonstrativo**, confirmar o pagamento fictício por ação própria e visualizar resultados persistentes.
 

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Pagamento do pedido #{{ pedido.pk }} | Amazon Acadêmico{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4">
+    <div><p class="eyebrow mb-1">Pagamento simulado</p><h1 class="h2 mb-1">Pedido #{{ pedido.pk }}</h1>
+        <p class="text-secondary mb-0">Situação: <strong>{{ pedido.get_status_display }}</strong> · Total R$ {{ pedido.total|floatformat:2 }}</p></div>
+    <a class="btn btn-outline-primary" href="{% url 'orders:detalhe' pedido.pk %}">Ver pedido</a>
+</div>
+
+<div class="row g-4 align-items-start">
+    <section class="col-12 col-lg-7">
+        <div class="surface-card p-3 p-md-4">
+            {% if pagavel %}
+                <ul class="nav nav-tabs mb-3" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link{% if aba_ativa == 'cartao' %} active{% endif %}" data-bs-toggle="tab" data-bs-target="#aba-cartao" type="button" role="tab" aria-controls="aba-cartao" aria-selected="{% if aba_ativa == 'pix' %}false{% else %}true{% endif %}">Cartão</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link{% if aba_ativa == 'pix' %} active{% endif %}" data-bs-toggle="tab" data-bs-target="#aba-pix" type="button" role="tab" aria-controls="aba-pix" aria-selected="{% if aba_ativa == 'pix' %}true{% else %}false{% endif %}">PIX</button>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane fade{% if aba_ativa == 'cartao' %} show active{% endif %}" id="aba-cartao" role="tabpanel">{% include 'payments/_cartao.html' %}</div>
+                    <div class="tab-pane fade{% if aba_ativa == 'pix' %} show active{% endif %}" id="aba-pix" role="tabpanel">{% include 'payments/_pix.html' %}</div>
+                </div>
+            {% elif pedido.status == 'PAGAMENTO_APROVADO' %}
+                <div class="alert alert-success mb-0">Pagamento aprovado (simulação). Nenhuma cobrança real foi feita.</div>
+            {% else %}
+                <div class="alert alert-secondary mb-0">Este pedido não aceita novo pagamento na situação atual.</div>
+            {% endif %}
+        </div>
+    </section>
+    <aside class="col-12 col-lg-5">
+        <div class="surface-card p-3 p-md-4">
+            <h2 class="h5 mb-3">Tentativas de pagamento</h2>
+            {% for t in tentativas %}
+                <div class="border-top py-2 small">
+                    <div class="d-flex justify-content-between gap-2">
+                        <strong>{{ t.get_modalidade_display }}</strong>
+                        <span class="badge {% if t.status == 'APROVADO' %}text-bg-success{% elif t.status == 'RECUSADO' %}text-bg-danger{% elif t.status == 'PENDENTE' %}text-bg-warning{% else %}text-bg-secondary{% endif %}">{{ t.get_status_display }}</span>
+                    </div>
+                    <div class="text-secondary">{{ t.criado_em|date:'d/m/Y H:i:s' }} · R$ {{ t.valor|floatformat:2 }}</div>
+                    {% if t.modalidade == 'CARTAO' %}<div>{{ t.cartao.bandeira }} {{ t.cartao.cartao_mascarado }} · {{ t.cartao.parcelas }}x de R$ {{ t.cartao.valor_parcela|floatformat:2 }}</div>{% endif %}
+                    {% if t.modalidade == 'PIX' %}<div class="text-break">{{ t.pix.codigo }}</div>{% endif %}
+                    {% if t.mensagem %}<div class="text-secondary">{{ t.mensagem }}</div>{% endif %}
+                </div>
+            {% empty %}
+                <p class="text-secondary small mb-0">Nenhuma tentativa registrada.</p>
+            {% endfor %}
+        </div>
+    </aside>
+</div>
+{% endblock %}

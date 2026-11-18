@@ -1,0 +1,25 @@
+{% comment %}
+Partial reutilizável (checkout de Davi). Contexto: pedido, form_cartao, next (opcional).
+Gerado por payments.views.contexto_pagamento(pedido). Envia para payments:pagar.
+{% endcomment %}
+{% load static %}
+<form method="post" action="{% url 'payments:pagar' pedido.pk %}" class="row g-3" novalidate data-pagamento-cartao>
+    {% csrf_token %}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    <div class="col-12">
+        <div class="alert alert-warning small mb-0" role="note">
+            <strong>Ambiente de simulação.</strong> Use somente dados fictícios; nenhuma cobrança é realizada.
+        </div>
+    </div>
+    {% for campo in form_cartao %}
+        <div class="{% if campo.name == 'numero' or campo.name == 'nome' %}col-12{% elif campo.name == 'parcelas' %}col-12 col-sm-6{% else %}col-6 col-sm-3{% endif %}">
+            <label class="form-label" for="{{ campo.id_for_label }}">{{ campo.label }}</label>
+            {{ campo }}
+            {% for erro in campo.errors %}<div class="small text-danger mt-1">{{ erro }}</div>{% endfor %}
+        </div>
+    {% endfor %}
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Pagar R$ {{ pedido.total|floatformat:2 }} (simulado)</button>
+    </div>
+</form>
+<script src="{% static 'payments/pagamentos.js' %}" defer></script>
