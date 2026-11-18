@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Simulador de frete | Amazon Acadêmico{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <p class="eyebrow mb-1">Entrega fictícia</p>
+    <h1 class="h2">Simulador de frete</h1>
+    <p class="text-secondary">Compare modalidades com valores e prazos demonstrativos.</p>
+</div>
+
+<div class="surface-card p-3 p-md-4 mb-4">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="row g-3">
+            {% for field in form %}
+                <div class="col-12 col-md-4">
+                    <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}<div class="text-danger small">{{ field.errors|striptags }}</div>{% endif %}
+                </div>
+            {% endfor %}
+        </div>
+        <button class="btn btn-primary mt-3" type="submit">Comparar fretes</button>
+    </form>
+</div>
+
+{% if cotacoes %}
+<div class="row g-3">
+    {% for cotacao in cotacoes %}
+        <div class="col-12 col-md-4">
+            <section class="surface-card p-3 h-100 {% if selecionada.tipo == cotacao.tipo %}border border-primary{% endif %}">
+                <h2 class="h5">{{ cotacao.tipo|lower|title }}</h2>
+                <p class="display-6 fs-3 mb-1">R$ {{ cotacao.valor|floatformat:2 }}</p>
+                <p class="mb-1">Prazo: {{ cotacao.prazo_dias }} dia(s)</p>
+                <p class="small text-secondary mb-0">Previsão simulada: {{ cotacao.previsao|date:'d/m/Y' }}</p>
+            </section>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -19,7 +19,7 @@
         </div>
         <div class="surface-card p-3 p-md-4 mt-3">
             <h2 class="h5 mb-3">Histórico de status</h2>
-            <ol class="list-group list-group-flush">
+            <ol class="list-group list-group-flush mb-3">
                 {% for evento in pedido.historico.all %}
                     <li class="list-group-item px-0">
                         <strong>{{ evento.get_status_display }}</strong>
@@ -28,6 +28,16 @@
                     </li>
                 {% endfor %}
             </ol>
+            {% if user.is_staff %}
+                {% if pedido.status == 'PAGAMENTO_APROVADO' or pedido.status == 'EM_PREPARACAO' or pedido.status == 'ENVIADO' %}
+                    <form method="post" action="{% url 'shipping:avancar' pedido.pk %}">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-primary" type="submit">Avançar entrega simulada</button>
+                    </form>
+                {% else %}
+                    <p class="small text-secondary mb-0">Não há etapa de entrega disponível para o status atual.</p>
+                {% endif %}
+            {% endif %}
         </div>
     </section>
     <aside class="col-12 col-lg-4">

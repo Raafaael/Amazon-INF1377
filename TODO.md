@@ -129,7 +129,7 @@ Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem
 
 ## T08 — Yuri · Frete fictício e acompanhamento de entrega
 
-**Estado:** [ ] Não iniciado  
+**Estado:** [~] Parcial — simulador e acompanhamento implementados e testados; a persistência integrada da cotação no checkout depende da T10.  
 **Prioridade:** alta  
 **Base já disponível:** CEP e modalidades do domínio; pedido pode ser representado por dados fictícios nos testes iniciais  
 **Referências:** tipos de entrega `PADRAO`, `EXPRESSA`, `AGENDADA`; estados e histórico de pedido; simulação de transporte prevista no `context.md`.
@@ -138,15 +138,15 @@ Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem
 
 **Checklist**
 
-- [ ] Implementar um serviço de cotação fictícia que receba o CEP (quando aplicável) e a modalidade e devolva **valor em reais e prazo estimado em dias**.
-- [ ] Oferecer modalidades **Padrão**, **Expressa** e **Agendada**; para a agendada, permitir selecionar/mostrar uma data futura de entrega simulada, sem criar agendamento externo.
-- [ ] Usar uma lógica simples e explicável para cotação (tabela fixa por modalidade ou aleatoriedade controlada); evitar retornar valores diferentes ao apenas recarregar a página.
-- [ ] Criar um pequeno **simulador de frete** com CEP, opções de entrega e comparação dos valores/prazos, utilizando Bootstrap e templates do Django.
-- [ ] Implementar a evolução fictícia do pedido após pagamento aprovado, por exemplo **EM_PREPARACAO → ENVIADO → ENTREGUE**, com datas coerentes e sem saltos incoerentes ou entrega anterior ao envio.
-- [ ] Criar uma **linha do tempo de acompanhamento** com status atual, eventos e previsão; disponibilizar avanço de estado por botão de simulação com permissão administrativa ou por mecanismo demonstrativo protegido, nunca por alteração livre de qualquer cliente.
-- [ ] Integrar o registro de status pelo contrato definido por Breno quando estiver disponível. Até lá, testar com pedidos fictícios/mocks, sem manter uma implementação paralela de `HistoricoStatusPedido` ou criar tabela `Entrega` desnecessária.
-- [ ] Registrar os valores/prazos escolhidos no pedido durante a integração e não sortear novamente depois da confirmação.
-- [ ] Criar testes de cotação, modalidade, cronologia, autorização e transições válidas, com resultados determinísticos.
+- [x] Implementar um serviço de cotação fictícia que receba o CEP (quando aplicável) e a modalidade e devolva **valor em reais e prazo estimado em dias**.
+- [x] Oferecer modalidades **Padrão** e **Expressa**. A modalidade Agendada e o respectivo campo de data foram retirados a pedido de Yuri, após observar que custavam mais que a entrega padrão e demoravam mais.
+- [x] Usar uma lógica simples e explicável para cotação (tabela fixa por modalidade ou aleatoriedade controlada); evitar retornar valores diferentes ao apenas recarregar a página.
+- [x] Criar um pequeno **simulador de frete** com CEP, opções de entrega e comparação dos valores/prazos, utilizando Bootstrap e templates do Django.
+- [x] Implementar a evolução fictícia do pedido após pagamento aprovado, por exemplo **EM_PREPARACAO → ENVIADO → ENTREGUE**, com datas coerentes e sem saltos incoerentes ou entrega anterior ao envio.
+- [x] Criar uma **linha do tempo de acompanhamento** com status atual, eventos e previsão; disponibilizar avanço de estado por botão de simulação com permissão administrativa ou por mecanismo demonstrativo protegido, nunca por alteração livre de qualquer cliente.
+- [x] Integrar o registro de status pelo contrato definido por Breno quando estiver disponível. Até lá, testar com pedidos fictícios/mocks, sem manter uma implementação paralela de `HistoricoStatusPedido` ou criar tabela `Entrega` desnecessária.
+- [~] Registrar os valores/prazos escolhidos no pedido durante a integração e não sortear novamente depois da confirmação. A cotação é determinística, mas a gravação no pedido depende do checkout da T10, ainda não iniciado.
+- [x] Criar testes de cotação, modalidade, cronologia, autorização e transições válidas, com resultados determinísticos.
 
 **Critério de conclusão:** o usuário consegue visualizar e comparar modalidades de frete, e um pedido de demonstração pode avançar por estados simulados com uma linha do tempo consistente.
 
