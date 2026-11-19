@@ -1,0 +1,23 @@
+{% extends 'checkout/base.html' %}
+{% block checkout_content %}
+<h2 class="h4 mb-3">2. Entrega</h2>
+<p class="text-break"><strong>Endereço:</strong> {{ checkout.endereco.texto_formatado }}</p>
+<p class="text-secondary">Valores e prazos fictícios. A cotação escolhida será mantida neste pedido.</p>
+<form method="post" novalidate>
+    {% csrf_token %}
+    <fieldset>
+        <legend class="h6">{{ form.modalidade.label }}</legend>
+        {% for opcao in form.modalidade %}
+            <div class="form-check surface-card p-3 ps-5 mb-2">
+                {{ opcao.tag }}
+                <label class="form-check-label" for="{{ opcao.id_for_label }}">{{ opcao.choice_label }}</label>
+            </div>
+        {% endfor %}
+        {% for erro in form.modalidade.errors %}<p class="text-danger small" role="alert">{{ erro }}</p>{% endfor %}
+    </fieldset>
+    <div class="d-flex flex-wrap gap-2 mt-4">
+        <a class="btn btn-outline-secondary" href="{% url 'checkout:endereco' checkout.pk %}">Voltar ao endereço</a>
+        <button class="btn btn-primary" type="submit">Continuar para pagamento</button>
+    </div>
+</form>
+{% endblock %}

@@ -193,16 +193,16 @@ Estas são **interfaces lógicas sugeridas**, e não APIs REST obrigatórias nem
 
 **Checklist**
 
-- [ ] Implementar o acesso **Finalizar compra** no carrinho somente para usuário autenticado e com itens válidos.
-- [ ] Criar um **checkout simples em etapas**, por exemplo: **1. Endereço → 2. Entrega → 3. Pagamento → 4. Confirmação**, com indicação visual de progresso; não criar uma SPA nem um wizard complexo.
-- [ ] Reutilizar a seleção/cadastro de endereço de Rafael, a cotação de frete de Yuri, o formulário de cartão/PIX de Pedro e a criação do pedido de Breno por contratos simples, sem duplicar a lógica nos templates.
-- [ ] Mostrar um **resumo do pedido** durante a finalização: produtos, quantidades, subtotal, frete e total. Revalidar esses dados no servidor antes de confirmar.
-- [ ] Exibir os campos e resultados adequados ao método de pagamento escolhido: cartão de demonstração com máscara, ou PIX com QR fictício; não recriar o simulador de Pedro.
-- [ ] Criar tela de **confirmação/resultado** com identificador do pedido e seu estado correto: pagamento aprovado, recusado ou PIX pendente. Não declarar compra paga antes da aprovação.
-- [ ] Garantir que atualizar a página, voltar uma etapa ou reenviar o formulário não crie pedidos duplicados nem altere valores já confirmados.
-- [ ] Tratar carrinho vazio, usuário não autenticado, endereço não selecionado, indisponibilidade de estoque e falha de pagamento com mensagens claras.
-- [ ] Manter o layout consistente com a Semana 1, usando templates reutilizáveis, Bootstrap e CSS simples. Ajustar apenas a navegação compartilhada necessária para acessar checkout/pedidos.
-- [ ] Criar testes simples do fluxo e de autorização, inicialmente com serviços simulados/mocks enquanto os outros módulos são desenvolvidos e, na integração final, usando os serviços reais.
+- [x] Implementar o acesso **Finalizar compra** no carrinho somente para usuário autenticado e com itens válidos.
+- [x] Criar um **checkout simples em etapas**, por exemplo: **1. Endereço → 2. Entrega → 3. Pagamento → 4. Confirmação**, com indicação visual de progresso; não criar uma SPA nem um wizard complexo.
+- [x] Reutilizar a seleção/cadastro de endereço de Rafael, a cotação de frete de Yuri, o formulário de cartão/PIX de Pedro e a criação do pedido de Breno por contratos simples, sem duplicar a lógica nos templates.
+- [x] Mostrar um **resumo do pedido** durante a finalização: produtos, quantidades, subtotal, frete e total. Revalidar esses dados no servidor antes de confirmar.
+- [x] Exibir os campos e resultados adequados ao método de pagamento escolhido: cartão de demonstração com máscara, ou PIX com QR fictício; não recriar o simulador de Pedro.
+- [x] Criar tela de **confirmação/resultado** com identificador do pedido e seu estado correto: pagamento aprovado, recusado ou PIX pendente. Não declarar compra paga antes da aprovação.
+- [x] Garantir que atualizar a página, voltar uma etapa ou reenviar o formulário não crie pedidos duplicados nem altere valores já confirmados.
+- [x] Tratar carrinho vazio, usuário não autenticado, endereço não selecionado, indisponibilidade de estoque e falha de pagamento com mensagens claras.
+- [x] Manter o layout consistente com a Semana 1, usando templates reutilizáveis, Bootstrap e CSS simples. Ajustar apenas a navegação compartilhada necessária para acessar checkout/pedidos.
+- [x] Criar testes simples do fluxo e de autorização, inicialmente com serviços simulados/mocks enquanto os outros módulos são desenvolvidos e, na integração final, usando os serviços reais.
 
 **Critério de conclusão:** a partir de um carrinho com produtos, o cliente consegue percorrer as etapas, visualizar valores, escolher uma modalidade de pagamento simulada, concluir ou receber o status apropriado e acessar o pedido gerado.
 

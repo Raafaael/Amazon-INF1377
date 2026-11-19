@@ -23,9 +23,12 @@ def _ler_quantidade(request):
 @login_required
 def detail(request):
     carrinho = Carrinho.do_usuario(request.user)
+    itens = list(carrinho.itens_com_produto())
     return render(request, 'cart/detail.html', {
-        'itens': carrinho.itens_com_produto(),
+        'itens': itens,
         'total': carrinho.total,
+        'checkout_disponivel': bool(itens) and all(
+            0 < item.quantidade <= item.produto.estoque and item.produto.preco > 0 for item in itens),
     })
 
 

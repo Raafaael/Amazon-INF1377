@@ -1,9 +1,10 @@
 {% comment %}
 Partial reutilizável (checkout de Davi). Contexto: pedido, form_cartao, next (opcional).
-Gerado por payments.views.contexto_pagamento(pedido). Envia para payments:pagar.
+Gerado por payments.views.contexto_pagamento(pedido). cartao_action pode substituir a rota padrão.
 {% endcomment %}
 {% load static %}
-<form method="post" action="{% url 'payments:pagar' pedido.pk %}" class="row g-3" novalidate data-pagamento-cartao>
+{% url 'payments:pagar' pedido.pk as cartao_padrao %}
+<form method="post" action="{{ cartao_action|default:cartao_padrao }}" class="row g-3" novalidate data-pagamento-cartao>
     {% csrf_token %}
     {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
     <div class="col-12">

@@ -1,6 +1,6 @@
 # Projeto Amazon — INF1377
 
-Base local de um comércio eletrônico acadêmico. Nesta entrega, o projeto já contém catálogo de livros e eletrônicos, cadastro pelo Django Admin, busca, filtros e carrinho para usuários autenticados. A interface visual está em integração e revisão.
+Base local de um comércio eletrônico acadêmico. O projeto contém catálogo de livros e eletrônicos, cadastro pelo Django Admin, busca, filtros, carrinho e checkout em etapas com endereços, frete fictício, pagamento simulado e consulta de pedidos. A avaliação humana da integração do checkout está pendente.
 
 ## Requisitos
 
@@ -58,7 +58,27 @@ Para verificar a configuração sem iniciar o servidor, execute `python manage.p
 
 O projeto usa `DEBUG=True` e uma chave pública de desenvolvimento como valor padrão de `DJANGO_SECRET_KEY`. Essa configuração serve somente para execução local. Caso queira fornecer uma chave própria nesta sessão do PowerShell, execute `$env:DJANGO_SECRET_KEY = 'sua-chave-local'` antes de iniciar o servidor; no Linux/macOS, use `export DJANGO_SECRET_KEY='sua-chave-local'`. Não registre chaves reais no repositório.
 
-Os diretórios `templates/` e `static/` estão configurados. O arquivo `db.sqlite3`, o ambiente `.venv` e arquivos gerados são ignorados pelo Git. O módulo de **pedidos** já registra e consulta compras simuladas; checkout, pagamento e frete continuam sob as tarefas dos demais integrantes.
+Os diretórios `templates/` e `static/` estão configurados. O arquivo `db.sqlite3`, o ambiente `.venv` e arquivos gerados são ignorados pelo Git. Os módulos de pedidos, endereços, frete e pagamento são integrados pelo checkout da Semana 2.
+
+### Checkout da Semana 2
+
+Após instalar as dependências e executar `python manage.py migrate`, entre na
+aplicação, adicione produtos disponíveis ao carrinho e clique em **Finalizar
+compra**. O fluxo passa por **Endereço → Entrega → Pagamento → Confirmação**.
+O cadastro de endereço retorna ao checkout. Depois de revisar o resumo e
+confirmar os dados, escolha cartão fictício ou PIX simulado.
+
+Para demonstrar aprovação, use o cartão fictício `4242 4242 4242 4242`; para
+recusa, `4111 1111 1111 1111`, com nome fictício, validade futura e CVV fictício
+de três dígitos. O PIX só é aprovado pela ação **Simular pagamento PIX**; gerar
+o QR não confirma a compra. Nenhuma modalidade realiza cobrança real.
+
+O pedido mantém os valores confirmados e não é duplicado por reenvio. O carrinho
+e o estoque só são ajustados após aprovação; recusa e PIX pendente preservam
+os itens. Novos produtos e quantidades adicionais no carrinho são preservados.
+O contrato, as decisões de integração e o roteiro completo estão em
+[`checkout/CONTRATO.md`](checkout/CONTRATO.md). Os testes específicos usam
+`python manage.py test checkout`.
 
 ### Demonstração de pedidos antes do checkout
 

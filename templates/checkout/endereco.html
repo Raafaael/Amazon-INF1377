@@ -1,0 +1,13 @@
+{% extends 'checkout/base.html' %}
+{% block checkout_content %}
+<h2 class="h4 mb-3">1. Endereço</h2>
+<p class="text-secondary">Selecione onde deseja receber os produtos da demonstração.</p>
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% include 'addresses/_selecao.html' %}
+    <div class="d-flex flex-wrap gap-2 mt-4">
+        <a class="btn btn-outline-secondary" href="{% url 'cart:detail' %}">Voltar ao carrinho</a>
+        <button class="btn btn-primary" type="submit"{% if not form.fields.endereco.queryset.exists %} disabled{% endif %}>Continuar para entrega</button>
+    </div>
+</form>
+{% endblock %}

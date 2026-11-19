@@ -1,0 +1,33 @@
+{% extends 'checkout/base.html' %}
+{% block checkout_content %}
+<h2 class="h4 mb-3">3. Pagamento</h2>
+{% if not pedido %}
+    <p>Confira o endereço e o resumo antes de registrar seu pedido.</p>
+    <p class="text-break"><strong>Endereço:</strong> {{ checkout.endereco.texto_formatado }}</p>
+    <p><strong>Entrega:</strong> {% if checkout.modalidade == 'PADRAO' %}Padrão{% else %}Expressa{% endif %} — {{ cotacao.prazo_dias }} dias (simulado).</p>
+    <form method="post" action="{% url 'checkout:confirmar' checkout.pk %}">
+        {% csrf_token %}
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <a class="btn btn-outline-secondary" href="{% url 'checkout:entrega' checkout.pk %}">Voltar à entrega</a>
+            <button class="btn btn-primary" type="submit">Confirmar dados e escolher pagamento</button>
+        </div>
+    </form>
+    <p class="small text-secondary mt-3 mb-0">O pedido ficará aguardando pagamento. Os valores serão fixados após esta confirmação.</p>
+{% elif pagavel %}
+    <p class="text-secondary">Pedido #{{ pedido.pk }} registrado. Escolha uma forma de pagamento fictícia.</p>
+    <div class="d-flex flex-wrap gap-2 mb-4" aria-label="Forma de pagamento">
+        <a class="btn {% if metodo == 'cartao' %}btn-primary{% else %}btn-outline-primary{% endif %}" href="{% url 'checkout:pagamento' checkout.pk %}?metodo=cartao">Cartão fictício</a>
+        <a class="btn {% if metodo == 'pix' %}btn-primary{% else %}btn-outline-primary{% endif %}" href="{% url 'checkout:pagamento' checkout.pk %}?metodo=pix">PIX simulado</a>
+    </div>
+    {% if metodo == 'pix' %}
+        {% include 'payments/_pix.html' %}
+    {% else %}
+        {% include 'payments/_cartao.html' %}
+    {% endif %}
+    <p class="small text-secondary mt-4">Os dados do pedido já foram confirmados. Uma recusa permite tentar outro cartão ou PIX, mantendo o mesmo pedido.</p>
+    <a class="btn btn-outline-secondary" href="{% url 'checkout:resultado' checkout.pk %}">Ver situação do pedido</a>
+{% else %}
+    <p>Este pedido não aceita novo pagamento.</p>
+    <a class="btn btn-primary" href="{% url 'checkout:resultado' checkout.pk %}">Ver resultado</a>
+{% endif %}
+{% endblock %}

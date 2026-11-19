@@ -53,8 +53,11 @@
             <section class="surface-card p-4">
                 <h2 class="h5">Resumo do pedido</h2>
                 <div class="d-flex justify-content-between border-top pt-3 mt-3"><span>Total</span><strong>R$ {{ total|floatformat:2 }}</strong></div>
-                <button class="btn btn-warning w-100 mt-3" type="button" disabled>Finalizar compra indisponível</button>
-                <p class="small text-secondary mt-2 mb-0">A finalização da compra não faz parte desta etapa.</p>
+                <form method="post" action="{% url 'checkout:iniciar' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-warning w-100 mt-3" type="submit"{% if not checkout_disponivel %} disabled{% endif %}>Finalizar compra</button>
+                </form>
+                <p class="small text-secondary mt-2 mb-0">{% if checkout_disponivel %}Endereço, entrega e pagamento simulado nas próximas etapas.{% else %}Revise as quantidades e a disponibilidade dos itens para continuar.{% endif %}</p>
             </section>
         </aside>
     </div>

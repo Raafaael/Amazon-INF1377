@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Finalizar compra | Amazon Acadêmico{% endblock %}
+{% block content %}
+<p class="eyebrow mb-1">Compra demonstrativa</p>
+<h1 class="h2 mb-3">Finalizar compra</h1>
+<nav aria-label="Etapas da compra" class="mb-4">
+    <ol class="checkout-steps">
+        {% for numero, nome, url in etapas %}
+            <li class="{% if numero == etapa %}active{% elif numero < etapa %}completed{% endif %}"{% if numero == etapa %} aria-current="step"{% endif %}>
+                {% if numero < etapa and not pedido %}<a href="{{ url }}">{{ numero }}. {{ nome }}</a>{% else %}<span>{{ numero }}. {{ nome }}</span>{% endif %}
+            </li>
+        {% endfor %}
+    </ol>
+</nav>
+<div class="row g-4 align-items-start">
+    <section class="col-12 col-lg-8">
+        <div class="surface-card p-3 p-md-4">{% block checkout_content %}{% endblock %}</div>
+    </section>
+    <aside class="col-12 col-lg-4">
+        {% include 'checkout/_resumo.html' %}
+    </aside>
+</div>
+{% endblock %}

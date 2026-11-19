@@ -1,8 +1,14 @@
 {% comment %}
 Partial reutilizável (checkout de Davi). Contexto: pedido, pix, pix_qr, pix_expirado, next (opcional).
 Gerado por payments.views.contexto_pagamento(pedido).
+O checkout pode fornecer gerar_pix_action, confirmar_pix_action e cancelar_pix_action.
 {% endcomment %}
 {% load static %}
+{% url 'payments:gerar_pix' pedido.pk as gerar_pix_padrao %}
+{% if pix %}
+    {% url 'payments:confirmar_pix' pix.pk as confirmar_pix_padrao %}
+    {% url 'payments:cancelar_pix' pix.pk as cancelar_pix_padrao %}
+{% endif %}
 <div class="alert alert-warning small" role="note">
     <strong>PIX SIMULADO.</strong> O QR Code abaixo é apenas demonstrativo e não pode ser pago em nenhum banco.
 </div>
@@ -15,29 +21,29 @@ Gerado por payments.views.contexto_pagamento(pedido).
         <p class="small mb-3"><span class="badge text-bg-warning" data-pix-badge>Pendente</span>
             <span data-pix-contador>Expira às {{ pix.pix.expira_em|time:'H:i:s' }}</span></p>
         <div class="d-flex flex-wrap justify-content-center gap-2" data-pix-acoes>
-            <form method="post" action="{% url 'payments:confirmar_pix' pix.pk %}">
+            <form method="post" action="{{ confirmar_pix_action|default:confirmar_pix_padrao }}">
                 {% csrf_token %}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
                 <button class="btn btn-success" type="submit">Simular pagamento PIX</button>
             </form>
-            <form method="post" action="{% url 'payments:cancelar_pix' pix.pk %}">
+            <form method="post" action="{{ cancelar_pix_action|default:cancelar_pix_padrao }}">
                 {% csrf_token %}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
                 <button class="btn btn-outline-secondary" type="submit">Cancelar PIX</button>
             </form>
         </div>
-        <form method="post" action="{% url 'payments:gerar_pix' pedido.pk %}" class="d-none" data-pix-novo>
+        <form method="post" action="{{ gerar_pix_action|default:gerar_pix_padrao }}" class="d-none" data-pix-novo>
             {% csrf_token %}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
             <button class="btn btn-primary" type="submit">Gerar novo PIX</button>
         </form>
     </div>
 {% elif pix_expirado %}
     <div class="alert alert-danger small" role="status">Seu último PIX expirou. Gere um novo código.</div>
-    <form method="post" action="{% url 'payments:gerar_pix' pedido.pk %}">
+    <form method="post" action="{{ gerar_pix_action|default:gerar_pix_padrao }}">
         {% csrf_token %}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
         <button class="btn btn-primary" type="submit">Gerar novo PIX</button>
     </form>
 {% else %}
     <p class="text-secondary">Gere um código PIX fictício. Ele fica pendente até você usar a ação de simulação e expira em {{ expiracao_segundos }} segundos.</p>
-    <form method="post" action="{% url 'payments:gerar_pix' pedido.pk %}">
+    <form method="post" action="{{ gerar_pix_action|default:gerar_pix_padrao }}">
         {% csrf_token %}{% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
         <button class="btn btn-primary" type="submit">Gerar PIX simulado</button>
     </form>

@@ -52,6 +52,14 @@ def _pedido_do_usuario(request, pedido_id):
     return get_object_or_404(Pedido, pk=pedido_id, usuario=request.user)
 
 
+def _retorno_checkout(pedido):
+    """Compras da T10 usam as ações que também finalizam estoque/carrinho."""
+    checkout = getattr(pedido, 'checkout', None)
+    if checkout is not None:
+        return redirect('checkout:pagamento', checkout_id=checkout.pk)
+    return None
+
+
 @login_required
 def lista(request):
     pedidos = (Pedido.objects.filter(usuario=request.user, status__in=services.STATUS_PAGAVEIS)
@@ -63,6 +71,9 @@ def lista(request):
 def pagar(request, pedido_id):
     """Página de demonstração: cartão fictício (POST aqui) e PIX simulado."""
     pedido = _pedido_do_usuario(request, pedido_id)
+    retorno = _retorno_checkout(pedido)
+    if retorno is not None:
+        return retorno
     proximo = _next_seguro(request)
     form = None
     if request.method == 'POST':
@@ -92,6 +103,9 @@ def pagar(request, pedido_id):
 @login_required
 def gerar_pix(request, pedido_id):
     pedido = _pedido_do_usuario(request, pedido_id)
+    retorno = _retorno_checkout(pedido)
+    if retorno is not None:
+        return retorno
     try:
         services.gerar_pix(request.user, pedido)
         messages.info(request, 'PIX simulado gerado. Ele não pode ser pago em um banco real.')
@@ -103,6 +117,9 @@ def gerar_pix(request, pedido_id):
 def _acao_pix(request, pagamento_id, acao, sucesso):
     pagamento = get_object_or_404(Pagamento, pk=pagamento_id, pedido__usuario=request.user,
                                   modalidade=Pagamento.Modalidade.PIX)
+    retorno = _retorno_checkout(pagamento.pedido)
+    if retorno is not None:
+        return retorno
     try:
         acao(request.user, pagamento)
         messages.success(request, sucesso)

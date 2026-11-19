@@ -71,12 +71,18 @@ body { background: var(--canvas); color: var(--ink); min-height: 100vh; display:
 .login-card { width: min(100%, 490px); }
 .cart-thumb { display: grid; place-items: center; min-height: 82px; background: #edf3f8; border-radius: .65rem; font-size: 2.2rem; }
 .cart-item { border-color: var(--line); }
+.checkout-steps { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; padding: 0; list-style: none; }
+.checkout-steps li { border-bottom: 3px solid var(--line); padding: .75rem .25rem; color: var(--muted); }
+.checkout-steps .active { color: var(--ink); border-color: var(--accent); font-weight: 700; }
+.checkout-steps .completed { border-color: #245b91; }
+.checkout-steps a { color: #245b91; }
 
 @media (max-width: 991.98px) {
     .header-search { max-width: none; }
     .navbar-nav { align-items: flex-start !important; }
 }
 @media (max-width: 575.98px) {
+    .checkout-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); font-size: .9rem; }
     .page-content { padding-top: 1.25rem; }
     .store-hero { min-height: 165px; }
     .hero-decoration { font-size: 5rem; padding-right: 0; }

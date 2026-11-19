@@ -1,0 +1,23 @@
+{% extends 'checkout/base.html' %}
+{% block checkout_content %}
+<h2 class="h4 mb-3">4. Situação do pedido #{{ pedido.pk }}</h2>
+{% if checkout.estoque_baixado %}
+    <div class="alert alert-success" role="status"><strong>Pagamento aprovado (simulação).</strong> Sua compra demonstrativa foi confirmada.</div>
+    <p>Os itens comprados foram retirados do carrinho. Nenhuma cobrança real foi feita.</p>
+{% elif pedido.status == 'PAGAMENTO_RECUSADO' %}
+    <div class="alert alert-danger" role="alert"><strong>Pagamento recusado.</strong> O pedido não está pago; seu carrinho foi preservado.</div>
+    {% if ultimo_pagamento %}<p>{{ ultimo_pagamento.mensagem }}</p>{% endif %}
+{% elif pedido.status == 'AGUARDANDO_PAGAMENTO' %}
+    <div class="alert alert-warning" role="status"><strong>Pedido aguardando pagamento.</strong> A compra ainda não foi paga; seu carrinho foi preservado.</div>
+    {% if pix or pix_expirado %}{% include 'payments/_pix.html' %}{% endif %}
+{% else %}
+    <div class="alert alert-secondary" role="status">Situação atual: {{ pedido.get_status_display }}.</div>
+{% endif %}
+<p class="mt-3"><strong>Estado do pedido:</strong> {{ pedido.get_status_display }}</p>
+<div class="d-flex flex-wrap gap-2 mt-4">
+    {% if pagavel %}<a class="btn btn-primary" href="{% url 'checkout:pagamento' checkout.pk %}">Escolher ou tentar outro pagamento</a>{% endif %}
+    <a class="btn btn-outline-primary" href="{% url 'orders:detalhe' pedido.pk %}">Ver detalhes do pedido</a>
+    <a class="btn btn-outline-secondary" href="{% url 'orders:lista' %}">Meus pedidos</a>
+    <a class="btn btn-outline-secondary" href="{% url 'cart:detail' %}">Voltar ao carrinho</a>
+</div>
+{% endblock %}

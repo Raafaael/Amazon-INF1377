@@ -1,0 +1,20 @@
+<section class="surface-card p-3 p-md-4" aria-label="Resumo do pedido">
+    <h2 class="h5 mb-3">Resumo do pedido{% if pedido %} #{{ pedido.pk }}{% endif %}</h2>
+    <ul class="list-unstyled mb-0">
+        {% for item in itens_resumo %}
+            <li class="border-bottom py-2">
+                <strong class="d-block text-break">{% if pedido %}{{ item.nome_produto }}{% else %}{{ item.nome }}{% endif %}</strong>
+                <div class="d-flex flex-wrap justify-content-between gap-1 small mt-1">
+                    <span>{{ item.quantidade }} × R$ {% if pedido %}{{ item.preco_unitario|floatformat:2 }}{% else %}{{ item.preco|floatformat:2 }}{% endif %}</span>
+                    <span>R$ {{ item.subtotal|floatformat:2 }}</span>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+    <dl class="mb-0 mt-3">
+        <div class="d-flex justify-content-between gap-2"><dt class="fw-normal">Subtotal</dt><dd>R$ {{ subtotal|floatformat:2 }}</dd></div>
+        <div class="d-flex justify-content-between gap-2"><dt class="fw-normal">Frete simulado</dt><dd>{% if frete != None %}R$ {{ frete|floatformat:2 }}{% else %}A selecionar{% endif %}</dd></div>
+        <div class="d-flex justify-content-between gap-2 border-top pt-2"><dt>{% if frete == None %}Total sem frete{% else %}Total{% endif %}</dt><dd class="fw-bold">R$ {{ total|floatformat:2 }}</dd></div>
+    </dl>
+    <p class="text-secondary small mb-0">Nenhuma cobrança real será realizada.</p>
+</section>
