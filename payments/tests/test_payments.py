@@ -17,9 +17,8 @@ from payments import services
 from payments.forms import CartaoForm
 from payments.models import Pagamento, PagamentoPix
 
-# Números fictícios válidos pelo algoritmo de Luhn.
-CARTAO_APROVA = '4242 4242 4242 4242'   # final par
-CARTAO_RECUSA = '4111 1111 1111 1111'   # final ímpar
+# Números fictícios válidos pelo algoritmo de Luhn; ambos podem aprovar ou recusar.
+CARTAO_TESTE = '4242 4242 4242 4242'
 
 
 def validade_futura():
@@ -36,23 +35,26 @@ class PagamentosBase(DadosCatalogoMixin, TestCase):
         cls.outro = User.objects.create_user('outro_pag', password='senha-teste-123')
 
     def setUp(self):
+        sorteio = patch('payments.services.secrets.randbelow', return_value=1)
+        sorteio.start()
+        self.addCleanup(sorteio.stop)
         self.livro = self.criar_livro()
         Carrinho.do_usuario(self.usuario).adicionar(self.livro, 2)
         self.pedido = criar_pedido(self.usuario, 'checkout-pag-1')
 
-    def dados_cartao(self, numero=CARTAO_APROVA, **extra):
+    def dados_cartao(self, numero=CARTAO_TESTE, **extra):
         dados = {'numero': numero, 'nome': 'Fulano Teste', 'validade': validade_futura(),
                  'cvv': '123', 'parcelas': 1}
         dados.update(extra)
         return dados
 
-    def pagar(self, numero=CARTAO_APROVA, **extra):
+    def pagar(self, numero=CARTAO_TESTE, **extra):
         return services.pagar_com_cartao(self.usuario, self.pedido, **self.dados_cartao(numero, **extra))
 
 
 class CartaoServicoTests(PagamentosBase):
     def test_cartao_aprovado_marca_pedido_como_pago(self):
-        pagamento = self.pagar(CARTAO_APROVA, parcelas=3)
+        pagamento = self.pagar(CARTAO_TESTE, parcelas=3)
         self.pedido.refresh_from_db()
         self.assertEqual(pagamento.status, Pagamento.Status.APROVADO)
         self.assertEqual(pagamento.valor, self.pedido.total)
@@ -63,17 +65,23 @@ class CartaoServicoTests(PagamentosBase):
         self.assertEqual(self.pedido.historico.last().status, Pedido.Status.PAGAMENTO_APROVADO)
 
     def test_cartao_recusado_nao_marca_como_pago(self):
-        pagamento = self.pagar(CARTAO_RECUSA)
+        with patch('payments.services.secrets.randbelow', return_value=0) as sorteio:
+            pagamento = self.pagar(CARTAO_TESTE)
+        sorteio.assert_called_once_with(2)
         self.pedido.refresh_from_db()
         self.assertEqual(pagamento.status, Pagamento.Status.RECUSADO)
         self.assertEqual(self.pedido.status, Pedido.Status.PAGAMENTO_RECUSADO)
         self.assertIn('Dados do cartão válidos', pagamento.mensagem)
 
     def test_nova_tentativa_apos_recusa(self):
-        self.pagar(CARTAO_RECUSA)
-        self.pagar(CARTAO_APROVA)
+        with patch('payments.services.secrets.randbelow', side_effect=[0, 1]) as sorteio:
+            self.pagar(CARTAO_TESTE)
+            self.pagar(CARTAO_TESTE)
+        self.assertEqual(sorteio.call_count, 2)
         self.pedido.refresh_from_db()
         self.assertEqual(self.pedido.status, Pedido.Status.PAGAMENTO_APROVADO)
+        self.assertEqual(list(self.pedido.pagamentos.order_by('pk').values_list('status', flat=True)),
+                         [Pagamento.Status.RECUSADO, Pagamento.Status.APROVADO])
         estados = list(self.pedido.historico.values_list('status', flat=True))
         self.assertEqual(estados, ['AGUARDANDO_PAGAMENTO', 'PAGAMENTO_RECUSADO',
                                    'AGUARDANDO_PAGAMENTO', 'PAGAMENTO_APROVADO'])
@@ -97,10 +105,11 @@ class CartaoServicoTests(PagamentosBase):
             {'parcelas': 0},
             {'parcelas': 13},
         ]
-        for extra in invalidos:
-            with self.subTest(extra=extra), self.assertRaises(ValidationError):
-                dados = self.dados_cartao(**extra)
-                services.pagar_com_cartao(self.usuario, self.pedido, **dados)
+        with patch('payments.services.secrets.randbelow', side_effect=AssertionError('Sorteio indevido')):
+            for extra in invalidos:
+                with self.subTest(extra=extra), self.assertRaises(ValidationError):
+                    dados = self.dados_cartao(**extra)
+                    services.pagar_com_cartao(self.usuario, self.pedido, **dados)
         self.assertFalse(Pagamento.objects.exists())
 
     def test_outro_usuario_nao_paga_pedido_alheio(self):
@@ -238,7 +247,8 @@ class ViewsTests(PagamentosBase):
         self.assertContains(resposta, 'Seu último PIX expirou')
         self.assertContains(resposta, 'Gerar novo PIX')
         self.assertContains(resposta, 'class="tab-pane fade show active" id="aba-pix"')
-        self.pagar(CARTAO_RECUSA)
+        with patch('payments.services.secrets.randbelow', return_value=0):
+            self.pagar(CARTAO_TESTE)
         self.assertNotContains(self.client.get(self.url), 'Seu último PIX expirou')
 
     def test_erro_no_cartao_volta_na_aba_cartao_mesmo_com_pix_expirado(self):

@@ -32,6 +32,9 @@ class CheckoutTests(DadosCatalogoMixin, TestCase):
         cls.endereco_alheio = Endereco.objects.create(usuario=cls.outro, **dados)
 
     def setUp(self):
+        sorteio = patch('payments.services.secrets.randbelow', return_value=1)
+        sorteio.start()
+        self.addCleanup(sorteio.stop)
         self.client.force_login(self.usuario)
         self.livro = self.criar_livro(estoque=10)
         self.carrinho = Carrinho.do_usuario(self.usuario)
@@ -97,7 +100,8 @@ class CheckoutTests(DadosCatalogoMixin, TestCase):
 
     def test_recusa_preserva_carrinho_e_permite_nova_tentativa_no_mesmo_pedido(self):
         pedido = self.confirmar()
-        response = self.client.post(self.url('cartao'), self.cartao('4111 1111 1111 1111'), follow=True)
+        with patch('payments.services.secrets.randbelow', return_value=0):
+            response = self.client.post(self.url('cartao'), self.cartao(), follow=True)
         self.assertContains(response, 'Pagamento recusado')
         pedido.refresh_from_db()
         self.assertEqual(pedido.status, Pedido.Status.PAGAMENTO_RECUSADO)

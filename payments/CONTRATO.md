@@ -52,6 +52,6 @@ O formulário de cartão envia para `payments:pagar`. Em caso de erro de valida�
 
 ## Regra da operadora simulada (não exibida na tela)
 
-Resultado **determinístico** pelo último dígito do número de cartão: **par → aprovado**, **ímpar → recusado**. O número também precisa ter 16 dígitos e passar no algoritmo de Luhn, com validade futura (MM/AA) e CVV de 3 dígitos.
+Após a validação, cada tentativa com cartão sorteia um dos dois resultados com chances iguais: **50% aprovado** e **50% recusado**. O número não determina o resultado; precisa ter 16 dígitos e passar no algoritmo de Luhn, com validade futura (MM/AA) e CVV de 3 dígitos. O resultado sorteado é registrado no pagamento e no histórico do pedido; atualizar a página não sorteia novamente. Uma recusa permite outra tentativa no mesmo pedido.
 
-Números de teste: `4242 4242 4242 4242` (aprova) e `4111 1111 1111 1111` (recusa).
+Número fictício válido para testar: `4242 4242 4242 4242`. Os testes automatizados controlam o sorteio para cobrir aprovação e recusa sem depender do acaso.

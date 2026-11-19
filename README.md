@@ -68,10 +68,13 @@ compra**. O fluxo passa por **Endereço → Entrega → Pagamento → Confirmaç
 O cadastro de endereço retorna ao checkout. Depois de revisar o resumo e
 confirmar os dados, escolha cartão fictício ou PIX simulado.
 
-Para demonstrar aprovação, use o cartão fictício `4242 4242 4242 4242`; para
-recusa, `4111 1111 1111 1111`, com nome fictício, validade futura e CVV fictício
-de três dígitos. O PIX só é aprovado pela ação **Simular pagamento PIX**; gerar
-o QR não confirma a compra. Nenhuma modalidade realiza cobrança real.
+Para testar o cartão, use o número fictício `4242 4242 4242 4242`, com nome
+fictício, validade futura e CVV fictício de três dígitos. Após a validação, cada
+tentativa tem 50% de chance de aprovação e 50% de recusa, independentemente do
+número informado. Se for recusado, é possível tentar novamente no mesmo pedido.
+Os testes automatizados controlam o sorteio para verificar os dois resultados.
+O PIX só é aprovado pela ação **Simular pagamento PIX**; gerar o QR não confirma
+a compra. Nenhuma modalidade realiza cobrança real.
 
 O pedido mantém os valores confirmados e não é duplicado por reenvio. O carrinho
 e o estoque só são ajustados após aprovação; recusa e PIX pendente preservam

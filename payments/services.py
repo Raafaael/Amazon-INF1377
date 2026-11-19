@@ -5,6 +5,7 @@ contrato `orders.services.atualizar_status(..., origem='pagamento')`.
 """
 
 import re
+import secrets
 import uuid
 from datetime import date, timedelta
 from decimal import ROUND_HALF_UP, Decimal
@@ -95,9 +96,9 @@ def bandeira_ficticia(numero):
     return 'Cartão de teste'
 
 
-def _autorizacao_simulada(numero):
-    """Regra determinística da operadora simulada (documentada só no CONTRATO.md)."""
-    return int(numero[-1]) % 2 == 0
+def _autorizacao_simulada():
+    """Sorteia uma aprovação ou recusa, com a mesma chance para cada resultado."""
+    return secrets.randbelow(2) == 1
 
 
 # ---------------------------------------------------------------- apoio
@@ -170,7 +171,7 @@ def pagar_com_cartao(usuario, pedido, *, numero, nome, validade, cvv, parcelas=1
         atualizado_em=timezone.now())
     pedido = _reabrir_se_recusado(pedido)
 
-    aprovado = _autorizacao_simulada(digitos)
+    aprovado = _autorizacao_simulada()
     status = Pagamento.Status.APROVADO if aprovado else Pagamento.Status.RECUSADO
     mensagem = ('Pagamento aprovado pela operadora simulada.' if aprovado else
                 'Dados do cartão válidos, mas o pagamento foi recusado pela operadora simulada. '

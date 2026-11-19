@@ -31,8 +31,7 @@ de `/carrinho/`, use **Finalizar compra** e percorra as etapas:
 
 ### Cenários de demonstração
 
-- Cartão fictício `4242 4242 4242 4242`: aprovação.
-- Cartão fictício `4111 1111 1111 1111`: recusa.
+- Cartão fictício `4242 4242 4242 4242`: após validar os dados, cada tentativa tem 50% de chance de aprovação e 50% de recusa. Em caso de recusa, tente novamente no mesmo pedido. Os testes automatizados controlam o sorteio para verificar os dois caminhos.
 - Informe nome fictício, validade futura em `MM/AA` e CVV fictício de três dígitos.
 - PIX: gerar QR mantém o pedido pendente; **Simular pagamento PIX** aprova.
   O prazo de expiração vem do simulador de Pedro. Pode cancelar ou gerar outro.
