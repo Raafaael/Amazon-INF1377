@@ -190,10 +190,12 @@ pendente. O Markdown permanece como referência editável para consolidar a entr
 ## 6. Conclusão e avaliação do uso da IA
 
 A IA consegiu concluir bem as tarefas, foram mais de 1000 linhas envolvidas todas revisadas, envolvendo  
-várias áreas diferentes, mas ela conseguiu se sair bem
+várias áreas diferentes, mas ela conseguiu se sair bem, todas as etapas foram implementada
+a parte visual ficou bem parecida com a amazon de verdade, em relação ao carrinho e etapas da compra,  
+assim como a página de pedidos  
 
 **Parecer final:** T10 aprovada, a IA conseguiu fazer tudo que foi pedido, sem problemas
-Os testes passaram bem
+Os testes passaram bem, nenhum problema foi identificado
 
 ---
 **Responsável pela avaliação:** Davi  
